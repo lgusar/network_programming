@@ -2,9 +2,6 @@ PROJECT = proba
 SOURCE = proba.c
 HEADERS = proba.h
 
-CC = gcc
-CFLAGS = -Wall -g
-LDFLAGS =
 OBJECTS = ${SOURCE:.c=.o}
 
 $(PROJECT): $(OBJECTS)
