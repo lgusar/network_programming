@@ -1,4 +1,4 @@
-#include <stdio.h>
+n#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -46,8 +46,7 @@ int main(int argc, char **argv){
     // ipv4 or ipv6
     int ipv = -1;
 
-    //work in progress
-    //will be used to switch the program to using getnameinfo
+    //switch the program to using getnameinfo
     int reverse_lookup = 0;
     
     while ((ch = getopt(argc, argv, "rtuxhn46")) != -1){
@@ -212,5 +211,6 @@ int main(int argc, char **argv){
         }
 
         printf("%s (%s) %s\n", ip_address, host, serv);
+        return 0;
     }
 }
