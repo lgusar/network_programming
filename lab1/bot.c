@@ -8,6 +8,8 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
+#define MESSAGE_MAXLEN 512
+
 void usage(){
 	fprintf(stderr, "Usage: ./bot server_ip server_port\n");
 }
@@ -24,6 +26,7 @@ int main(int argc, char **argv){
 	char *server_port = argv[2];
 
 	const char *data = "REG\n";
+	char *message[MESSAGE_MAXLEN];
 
 	struct addrinfo *server_address;
 	struct addrinfo hints;
@@ -48,6 +51,10 @@ int main(int argc, char **argv){
 	}
 
 	int bytes_sent = sendto(sock, data, sizeof(data), 0, server_address->ai_addr, server_address->ai_addrlen);
+
+	int recieved_message = recvfrom(sock, message, sizeof(message), 0, server_address->ai_addr, server_address->ai_addrlen);
+
+	printf("%s\n", message);
 
 	freeaddrinfo(server_address);
 }
