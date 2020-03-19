@@ -52,7 +52,7 @@ int main(int argc, char **argv){
 
 	int bytes_sent = sendto(sock, data, sizeof(data), 0, server_address->ai_addr, server_address->ai_addrlen);
 
-	int recieved_message = recvfrom(sock, message, sizeof(message), 0, server_address->ai_addr, server_address->ai_addrlen);
+	int bytes_recv = recvfrom(sock, message, sizeof(message), 0, NULL, NULL);
 
 	printf("%s\n", message);
 
