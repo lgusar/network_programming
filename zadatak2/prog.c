@@ -211,6 +211,6 @@ int main(int argc, char **argv){
             }
         }
 
-        printf("%s %s\n", host, serv);
+        printf("%s (%s) %s\n", ip_address, host, serv);
     }
 }
