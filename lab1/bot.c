@@ -19,7 +19,7 @@ struct pairs{
 struct msg{
 	char command;
 	struct pairs entries[20];
-}
+};
 
 void usage(){
 	fprintf(stderr, "Usage: ./bot server_ip server_port\n");
@@ -75,11 +75,12 @@ void parse_packet(struct msg *message, char *packet, int bytes_recv){
 	int i = PORTLEN + INET_ADDRSTRLEN;
 	bytes_recv--; // decrementing by size of char command
 	int counter = bytes_recv / i;
-	message.command = packet++;
+	message->command = *packet++;
+	printf("%s\n", message->command);
 	for(i = 0; i < counter; i++){
-		strcpy(message.entries[i].ip, packet);
-		packet += sizeof(message.entries[i].ip);
-		strcpy(message.entries[i].port, packet);
-		packet += sizeof(message.entries[i].port);
+		strcpy(message->entries[i].ip, packet);
+		packet += sizeof(message->entries[i].ip);
+		strcpy(message->entries[i].port, packet);
+		packet += sizeof(message->entries[i].port);
 	}
 }
