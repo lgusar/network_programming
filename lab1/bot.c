@@ -39,6 +39,40 @@ void parse_packet(struct msg *message, char *packet, int bytes_recv){
 	}
 }
 
+void prog(struct msg *message){
+
+	char payload[512];
+	char *data = "HELLO\n";
+
+	char *udp_server_ip = message->entries[0].ip;
+	char *udp_server_port = message->entries[0].port;
+
+	struct addrinfo *udp_server;
+	struct addrinfo hints;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_socktype = SOCK_DGRAM;
+
+	int sock;
+	sock = socket(PF_INET, SOCK_DGRAM, 0);
+
+	if(sock < 0){
+		err(2, "socket error\n");
+	}
+
+	int gai_error;
+
+	if((gai_error = getaddrinfo(udp_server_ip, udp_server_port, &hints, &udp_server)) != 0){
+		err(3, "getaddrinfo() failed. %s\n", gai_strerror(gai_error));
+	}
+
+	int bytes_sent = sendto(sock, data, sizeof(data), 0, udp_server->ai_addr, udp_server->ai_addrlen);
+
+	int bytes_recv = recvfrom(sock, payload, sizeof(payload), 0, NULL, NULL);
+
+	printf("%s\n", payload);
+}
+
 int main(int argc, char **argv){
 
 	//the program requires 2 arguments
@@ -51,7 +85,7 @@ int main(int argc, char **argv){
 	char *server_port = argv[2];
 
 	const char *data = "REG\n";
-	char *packet[MESSAGE_MAXLEN];
+	char packet[MESSAGE_MAXLEN];
 	struct msg message;
 
 	struct addrinfo *server_address;
@@ -81,6 +115,10 @@ int main(int argc, char **argv){
 	int bytes_recv = recvfrom(sock, packet, sizeof(packet), 0, NULL, NULL);
 
 	parse_packet(&message, packet, bytes_recv);
+
+	if(message.command == '0'){
+		prog();
+	}
 
 	freeaddrinfo(server_address);
 }
