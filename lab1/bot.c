@@ -25,6 +25,20 @@ void usage(){
 	fprintf(stderr, "Usage: ./bot server_ip server_port\n");
 }
 
+void parse_packet(struct msg *message, char *packet, int bytes_recv){
+	int i = PORTLEN + INET_ADDRSTRLEN;
+	bytes_recv--; // decrementing by size of char command
+	int counter = bytes_recv / i;
+	message->command = *packet++;
+	printf("%s\n", message->command);
+	for(i = 0; i < counter; i++){
+		strcpy(message->entries[i].ip, packet);
+		packet += sizeof(message->entries[i].ip);
+		strcpy(message->entries[i].port, packet);
+		packet += sizeof(message->entries[i].port);
+	}
+}
+
 int main(int argc, char **argv){
 
 	//the program requires 2 arguments
@@ -66,21 +80,7 @@ int main(int argc, char **argv){
 
 	int bytes_recv = recvfrom(sock, packet, sizeof(packet), 0, NULL, NULL);
 
-	parse_packet(&message, packet);
+	parse_packet(&message, packet, bytes_recv);
 
 	freeaddrinfo(server_address);
-}
-
-void parse_packet(struct msg *message, char *packet, int bytes_recv){
-	int i = PORTLEN + INET_ADDRSTRLEN;
-	bytes_recv--; // decrementing by size of char command
-	int counter = bytes_recv / i;
-	message->command = *packet++;
-	printf("%s\n", message->command);
-	for(i = 0; i < counter; i++){
-		strcpy(message->entries[i].ip, packet);
-		packet += sizeof(message->entries[i].ip);
-		strcpy(message->entries[i].port, packet);
-		packet += sizeof(message->entries[i].port);
-	}
 }
