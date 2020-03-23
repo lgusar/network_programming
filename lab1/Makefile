@@ -1,12 +1,10 @@
-PROJECT = bot
-SOURCE = bot.c
-
-OBJECTS = ${SOURCE:.c=.o}
-
-$(PROJECT): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(PROJECT)
-
-$(OBJECTS): $(HEADERS)
+bot: bot.c
+	cc bot.c -o bot
+	
+udp_server: udp_server.c
+	cc udp_server.c -o udp_server
+	
+build: bot udp_server
 
 clean:
-	-rm -f $(PROJECT) $(OBJECTS) *.core
+	rm -f bot udp_server
