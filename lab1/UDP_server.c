@@ -8,15 +8,17 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <getopt.h>
+#include <err.h>
 
 void usage(){
 	err(1, "./UDP_server [-l port] [-p payload]\n");
 }
 
-int main(int argc, char *argv){
-
-	char payload[512] = "";
-	int port = 1234;
+int main(int argc, char **argv){
+	
+	char payload[512];
+	payload = ""; //default value
+	int port = 1234; //default value
 	char recv_message[512];
 
 	char ch;

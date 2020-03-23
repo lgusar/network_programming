@@ -108,7 +108,7 @@ void run(struct msg *message, char *payload){
 	struct addrinfo hints;
 
 	memset(&hints, 0, sizeof(hints));
-	hits.ai_socktype = SOCK_DGRAM;
+	hints.ai_socktype = SOCK_DGRAM;
 
 	int sock;
 	sock = socket(PF_INET, SOCK_DGRAM, 0);
@@ -187,7 +187,7 @@ int main(int argc, char **argv){
 	parse_packet(&message, packet, bytes_recv);
 
 	if(message.command == '0'){
-		prog();
+		prog(&message, payload);
 	}
 
 	//WORK IN PROGRESS
@@ -197,12 +197,12 @@ int main(int argc, char **argv){
 		to which the payload is going to be sent
 	*/
 
-	int bytes_recv = recvfrom(sock, packet, sizeof(packet), 0, NULL, NULL);
+	bytes_recv = recvfrom(sock, packet, sizeof(packet), 0, NULL, NULL);
 
 	parse_packet(&message, packet, bytes_recv);
 
 	if(message.command == '1'){
-		run();
+		run(&message, payload);
 	}
 
 
