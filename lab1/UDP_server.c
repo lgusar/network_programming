@@ -16,8 +16,7 @@ void usage(){
 
 int main(int argc, char **argv){
 	
-	char payload[512];
-	payload = ""; //default value
+	char payload[512] = ""; //default value
 	int port = 1234; //default value
 	char recv_message[512];
 
@@ -29,14 +28,12 @@ int main(int argc, char **argv){
 				port = atoi(optarg);
 				break;
 			case 'p':
-				payload = optarg;
+				strcpy(payload, optarg);
 				break;
 			default:
 				err(1, "unknown option %c\n", ch);
 		}
 	}
-
-	return 0;
 
 	int sockfd;
 
@@ -50,17 +47,17 @@ int main(int argc, char **argv){
 	udp_addr.sin_port = htons(port);
 	udp_addr.sin_addr.s_addr = INADDR_ANY;
 
-	bind(mysock, (struct sockaddr *) udp_addr, sizeof(udp_addr));
-
-	return 0;
+	bind(sockfd, (struct sockaddr *) &udp_addr, sizeof(udp_addr));
 
 	struct sockaddr_in bot_addr;
-	socketlen_t = bot_len;
+	socklen_t bot_len;
 
 	while(1){
+		
 		bot_len = sizeof(bot_addr);
 
 		int bytes_recv = recvfrom(sockfd, recv_message, sizeof(recv_message), 0, (struct sockaddr *) &bot_addr, bot_len);
+		printf("received a packet\n");
 		if(!(strncmp(recv_message, "HELLO\n", 6))){
 			int bytes_sent = sendto(sockfd, payload, sizeof(payload), 0, (struct sockaddr *) &bot_addr, bot_len);
 		}

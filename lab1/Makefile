@@ -1,10 +1,10 @@
 bot: bot.c
 	cc bot.c -o bot
 	
-udp_server: udp_server.c
-	cc udp_server.c -o udp_server
+UDP_server: UDP_server.c
+	cc UDP_server.c -o UDP_server
 	
-build: bot udp_server
+build: bot UDP_server
 
 clean:
-	rm -f bot udp_server
+	rm -f bot UDP_server
