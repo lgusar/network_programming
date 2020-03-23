@@ -10,15 +10,17 @@
 #include <getopt.h>
 #include <err.h>
 
+#define BUFLEN 512
+
 void usage(){
 	err(1, "./UDP_server [-l port] [-p payload]\n");
 }
 
 int main(int argc, char **argv){
 	
-	char payload[512] = ""; //default value
+	char payload[BUFLEN] = ""; //default value
 	int port = 1234; //default value
-	char recv_message[512];
+	char recv_message[BUFLEN];
 
 	char ch;
 
@@ -56,10 +58,10 @@ int main(int argc, char **argv){
 		
 		bot_len = sizeof(bot_addr);
 
-		int bytes_recv = recvfrom(sockfd, recv_message, sizeof(recv_message), 0, (struct sockaddr *) &bot_addr, bot_len);
-		printf("received a packet\n");
+		int bytes_recv = recvfrom(sockfd, &recv_message, BUFLEN, 0, (struct sockaddr *) &bot_addr, &bot_len);
+		printf("%s\n", recv_message);
 		if(!(strncmp(recv_message, "HELLO\n", 6))){
-			int bytes_sent = sendto(sockfd, payload, sizeof(payload), 0, (struct sockaddr *) &bot_addr, bot_len);
+			int bytes_sent = sendto(sockfd, payload, strlen(payload), 0, (struct sockaddr *) &bot_addr, bot_len);
 		}
 	}
 

