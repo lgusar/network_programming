@@ -3,14 +3,11 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <errno.h>
 #include <string.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <getopt.h>
 #include <err.h>
-
-#define BUFLEN 512
 
 void usage(){
 	err(1, "./UDP_server [-l port] [-p payload]\n");
@@ -18,9 +15,9 @@ void usage(){
 
 int main(int argc, char **argv){
 	
-	char payload[BUFLEN] = ""; //default value
+	char payload[512] = ""; //default value
 	int port = 1234; //default value
-	char recv_message[BUFLEN];
+	char recv_message[512];
 
 	char ch;
 
@@ -58,10 +55,11 @@ int main(int argc, char **argv){
 		
 		bot_len = sizeof(bot_addr);
 
-		int bytes_recv = recvfrom(sockfd, &recv_message, BUFLEN, 0, (struct sockaddr *) &bot_addr, &bot_len);
+		int bytes_recv = recvfrom(sockfd, &recv_message, 512, 0, (struct sockaddr *) &bot_addr, &bot_len);
+		printf("received packet %s\n", recv_message);
 		if(!(strncmp(recv_message, "HELLO\n", 6))){
-			int bytes_sent = sendto(sockfd, payload, strlen(payload), 0, (struct sockaddr *) &bot_addr, bot_len);
-			printf("sent %s as payload\n", payload);
+			int bytes_sent = sendto(sockfd, &payload, sizeof(payload), 0, (struct sockaddr *) &bot_addr, bot_len);
+			printf("sent payload\n");
 		}
 	}
 
