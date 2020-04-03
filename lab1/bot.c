@@ -127,6 +127,8 @@ int main(int argc, char **argv)
 {
     if(argc != 3) usage();
 
+    int received_prog = 0;
+
     char payload[BUFLEN];
     char packet[BUFLEN];
     struct msg message;
@@ -145,10 +147,12 @@ int main(int argc, char **argv)
         
         parse_packet(&message, packet, bytes_recv);
         
-        if(message.command == '0') 
+        if(message.command == '0'){
             prog(sockfd, &message, payload);
+            received_prog = 1;
+        }
         
-        else if(message.command == '1')
+        else if(message.command == '1' && received_prog)
             run(sockfd, &message, payload);
 
     } 
