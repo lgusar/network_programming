@@ -163,4 +163,32 @@ ssize_t w_read(int fd, void *buf, size_t count)
     return bytes_read;
 }
 
+ssize_t w_send(int sockfd, const void *buf, size_t len, int flags)
+{
+    ssize_t bytes_sent = send(sockfd, buf, len, flags);
+    if(bytes_sent < 0){
+        fprintf(stderr, "send() error: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    return bytes_sent;
+}
 
+ssize_t w_recv(int sockfd, void *buf, size_t len, int flags)
+{
+    ssize_t bytes_recv = recv(sockfd, buf, len, flags);
+    if(bytes_recv < 0){
+        fprintf(stderr, "recv() error: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    return bytes_recv;
+}
+
+void w_getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
+{
+    int status = getpeername(sockfd, addr, addrlen);
+    if(status < 0){
+        fprintf(stderr, "getpeername() error: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    return;
+}
