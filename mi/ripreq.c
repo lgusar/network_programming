@@ -33,7 +33,7 @@ void set_rip_packet(struct rip_packet *packet)
     packet->command = 0x01;
     packet->version = 0x02;
 
-    packet->entries[0].metric = 0x10;
+    packet->entries[0].metric = ntohl(0x10);
     
     return;
 }
@@ -71,7 +71,24 @@ int main(int argc, char **argv)
     serv_addr.sin_port = port;
     serv_addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
-    w_sendto(sockfd, &packet, sizeof(packet), 0, (const struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    w_sendto(sockfd, &packet, sizeof(packet)-24*sizeof(struct rip_entry), 0, (const struct sockaddr *)&serv_addr, sizeof(serv_addr));
+    
+    w_recvfrom(sockfd, &packet, sizeof(packet), 0, NULL, NULL);
+    
+    for(int i = 0; i < MAX_ENTRY; ++i){
+		int address = packet.entries[i].ip_address;
+		int submask = packet.entries[i].subnet_mask;
+		int metrika = ntohl(packet.entries[i].metric);
+		if(address == 0) break;
+		struct in_addr addr;
+		struct in_addr mask;
+		addr.s_addr = address;
+		char *ipaddr = inet_ntoa(addr);
+		printf("%s/", ipaddr);
+		mask.s_addr = submask;
+		char *strmask = inet_ntoa(mask);
+		printf("%s metrika: %d\n", strmask, metrika);
+	}
 
     return 0;
 }
