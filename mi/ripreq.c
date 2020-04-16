@@ -8,24 +8,33 @@
 #define PORT 520
 
 
-struct ripentry
+struct rip_entry
 {
-    char af_identifier[2];
-    char route_tag[2];
-    char ip_address[4];
-    char subnet_mask[4];
-    char next_hop[4];
-    char metric[4];
+    unsigned int af_identifier : 16;
+    unsigned int route_tag : 16;
+    unsigned int ip_address : 32;
+    unsigned int subnet_mask : 32;
+    unsigned int next_hop : 32;
+    unsigned int metric : 32;
 };   
 
-struct rippacket
+struct rip_packet
 {
-    char command;
-    char version;
-    char must_be_zero[2];
-    struct ripentry entries[MAX_ENTRY];
+    unsigned int command : 8;
+    unsigned int version : 8;
+    unsigned int must_be_zero : 16;
+    struct rip_entry entries[MAX_ENTRY];
 };
 
+void set_rip_packet(struct rip_packet *packet)
+{
+    packet->command = 0x01;
+    packet->version = 0x02;
+
+    packet->entries[0].metric = 0x10;
+    
+    return;
+}
 
 void usage()
 {
@@ -43,11 +52,15 @@ int main(int argc, char **argv)
 
     int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
     
-    struct rippacket packet;
+    struct rip_packet packet;
     memset(&packet, 0, sizeof(packet));
-    strcpy(packet.entries[0].ip_address, ip_address);
+    set_rip_packet(&packet);
 
-    printf("%s\n", packet.entries[0].ip_address);
+    printf("%d\n", packet.entries[0].metric);
+    printf("%x\n", packet.must_be_zero);
+    printf("%x\n", packet.command);
+    printf("%x\n", packet.version);
+
     return 0;
 
 
