@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 				quit();
 			case '1':
 				prog_tcp(message.entry[0].ip_address,
-						atoi(message.entry[0].port, payload);
+						atoi(message.entry[0].port_number), payload);
 				break;
 			case '2':
 				//prog_udp();
@@ -125,7 +125,6 @@ int main(int argc, char **argv)
 	}
 	
 	close(sockfd);
-	freeaddrinfo(res);
 	
 	return 0;
 }

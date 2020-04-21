@@ -4,15 +4,15 @@ LDFLAGS =
 
 BOT_C = bot.c
 
-UDP_SERVER_C = UDP_server.c
+SERVER_C = server.c
 
-all: bot UDP_server
+all: bot server
 
 bot: $(BOT_C)
 	$(CC) $(BOT_C) -o $@
 
-UDP_server: $(UDP_SERVER_C)
-	$(CC) $(UDP_SERVER_C) -o $@
+server: $(SERVER_C)
+	$(CC) $(SERVER_C) -o $@
 	
 clean:
-	rm -f bot UDP_server *.o *.core
+	rm -f bot server *.o *.core
