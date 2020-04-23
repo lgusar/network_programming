@@ -1,6 +1,6 @@
 #define PORT_LEN 22
 #define ADDR_LEN 16
-#define MAX_ENTRIES
+#define MAX_ENTRIES 20
 
 struct pairs
 {
@@ -14,5 +14,4 @@ struct msg
     char command;
     int number_of_pairs;
     struct pairs entry[MAX_ENTRIES];
-
 };
