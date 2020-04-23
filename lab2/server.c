@@ -60,7 +60,33 @@ int main(int argc, char **argv)
 	sock_tcp = w_socket(AF_INET, SOCK_STREAM, 0);
 	sock_udp = w_socket(AF_INET, SOCK_DGRAM, 0);
 
+	w_listen(sock_tcp, BACKLOG);
 	
+	FD_SET(stdin_fd, &master);
+	FD_SET(sock_tcp, &master);
+	FD_SET(sock_udp, &master);
+	
+	if(sock_tcp > sock_udp) fdmax = sock_tcp;
+	else fdmax = sock_udp;
+	
+	for(;;){
+		read_fds = master;
+		w_select(fdmax+1, &read_fds, NULL, NULL, NULL);
+		
+		for(int i = 0; i <= fdmax; ++i){
+			if(FD_ISSET(i, &read_fds)){
+				if(i == stdin_fd){
+					read(stdin_fd, buf, PAYLOAD_MAX);
+					if(strcmp(buf, "PRINT\n") == 0)
+						printf("%s\n", popis);
+					else if(strstr(buf, "SET")){
+						printf("buf: %s", buf);
+						//printf("popis: %s\n", popis);
+					}					
+				}
+			}
+		}
+	}
 
 
 
