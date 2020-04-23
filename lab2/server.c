@@ -13,7 +13,7 @@
 
 #define DEFAULT_PORT 1234
 #define PAYLOAD_MAX 1024
-
+#define BACKLOG 16
 
 void usage()
 {
@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 	char ch;
 	
 	int udp_port, tcp_port;
+    udp_port = tcp_port = DEFAULT_PORT;
 	char popis[PAYLOAD_MAX] = "";
 	
 	while ((ch = getopt(argc, argv, "t:u:p:")) != -1){
@@ -45,27 +46,25 @@ int main(int argc, char **argv)
 				usage();
 		}
 	}
-	
+
+    fd_set master;
+    fd_set read_fds;
+    int fdmax;
 	int sock_tcp, sock_udp;
+    int stdin_fd = 0;
+    int clifd;
+    struct sockaddr_storage cli_addr;
+    socklen_t addrlen;
+    char buf[PAYLOAD_MAX];
 	
 	sock_tcp = w_socket(AF_INET, SOCK_STREAM, 0);
 	sock_udp = w_socket(AF_INET, SOCK_DGRAM, 0);
 
-	//tcp socket
-	if(fork() == 0){
-		struct sockaddr_in addr;
-		memset(&addr, 0, sizeof addr);
-		addr.sin_family = AF_INET;
-		addr.sin_port = htons(tcp_port);
-		w_bind(sock_tcp, (struct sockaddr *)&addr, sizeof addr);
-	}
 	
-	struct sockaddr_in addr;
-	memset(&addr, 0, sizeof addr);
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(udp_port);
-	w_bind(sock_udp, (struct sockaddr *)&addr, sizeof addr);
-	
+
+
+
+
 	
 	close(sock_tcp);
 	close(sock_udp);

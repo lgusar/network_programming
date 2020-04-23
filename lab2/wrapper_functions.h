@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <sys/select.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -191,4 +192,14 @@ void w_getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
         exit(EXIT_FAILURE);
     }
     return;
+}
+
+int w_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+    int return_value = select(nfds, readfds, writefds, exceptfds, timeout);
+    if(return_value < 0){
+        fprintf(stderr, "select() error: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    return return_value;
 }
