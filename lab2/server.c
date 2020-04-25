@@ -46,8 +46,10 @@ int main(int argc, char **argv)
 				usage();
 		}
 	}
-	
-	popis[strlen(popis)-1] = '\n';
+	if(strlen(popis) != 1025)
+		popis[strlen(popis)] = '\n';
+	else
+		popis[strlen(popis)-1] = '\n';
 
     fd_set master;
     fd_set read_fds;
@@ -100,10 +102,14 @@ int main(int argc, char **argv)
 						printf("%s\n", popis);
 					else if(strstr(buf, "SET")){
 						strncpy(popis, buf + 4, strlen(buf) - 5);
+						if(strlen(popis) != 1025)
+							popis[strlen(popis)] = '\n';
+						else
+							popis[strlen(popis)-1] = '\n';
 					}
 					else if(strcmp(buf, "QUIT\n") == 0){
 						printf("Quitting.\n");
-						exit(0);
+						goto out;
 					}	
 					else printf("Unknown command.\n");
 				}
@@ -126,21 +132,22 @@ int main(int argc, char **argv)
 		        
                 if(i == sock_udp){
                     memset(buf, 0, PAYLOAD_MAX);
-                    addrlen = sizeof cli_addr;
-                    int bytes_recv = w_recvfrom(sock_udp, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, addrlen);
+                    socklen_t addr_len = sizeof cli_addr;
+                    int bytes_recv = w_recvfrom(sock_udp, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, &addr_len);
 
                     printf("UDP packet from bot.\n");
                     if(strncmp(buf, "HELLO\n", 6) == 0){
                         strcpy(buf, popis);
-                        w_sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&cli_addr, addrlen);
-                        printf("Payload sent\n");:
+                        w_sendto(sock_udp, buf, strlen(buf), 0, (struct sockaddr *)&cli_addr, addr_len);
+                        printf("Payload sent\n");
                     }
                 }    
 				
 			}
 		}
 	}
-	
+out:
+	printf("Closing sockets...\n");
 	close(sock_tcp);
 	close(sock_udp);
 	

