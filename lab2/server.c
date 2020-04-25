@@ -123,7 +123,19 @@ int main(int argc, char **argv)
 					}
 					close(clifd);
 				}
-				
+		        
+                if(i == sock_udp){
+                    memset(buf, 0, PAYLOAD_MAX);
+                    addrlen = sizeof cli_addr;
+                    int bytes_recv = w_recvfrom(sock_udp, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, addrlen);
+
+                    printf("UDP packet from bot.\n");
+                    if(strncmp(buf, "HELLO\n", 6) == 0){
+                        strcpy(buf, popis);
+                        w_sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&cli_addr, addrlen);
+                        printf("Payload sent\n");:
+                    }
+                }    
 				
 			}
 		}
