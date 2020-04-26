@@ -148,7 +148,8 @@ void run(struct msg message, char *payload)
 {
 	
 	printf("Starting the attack...\n");
-	
+	printf("Payload: %s\n", payload);
+
 	int sockfd = w_socket(AF_INET, SOCK_DGRAM, 0);
 	
 	for(int time = 0; time < 100; ++time){
