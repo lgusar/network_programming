@@ -78,6 +78,8 @@ void prog_tcp(char *ip, int port, char *payload)
 {
 	printf("Connecting to TCP server...\n");
 	
+	memset(payload, 0, PAYLOAD_MAX);
+	
 	char *packet = "HELLO\n";
 	
 	int sockfd = w_socket(AF_INET, SOCK_STREAM, 0);
@@ -113,6 +115,8 @@ void prog_udp(char *ip, int port, char *payload)
 {
 	
 	printf("Connecting to UDP server...\n");
+	
+	memset(payload, 0, PAYLOAD_MAX);
 	
 	char *packet = "HELLO\n";
 	

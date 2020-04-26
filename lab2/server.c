@@ -101,6 +101,7 @@ int main(int argc, char **argv)
 					if(strcmp(buf, "PRINT\n") == 0)
 						printf("%s\n", popis);
 					else if(strstr(buf, "SET")){
+						memset(popis, 0, PAYLOAD_MAX);
 						strncpy(popis, buf + 4, strlen(buf) - 5);
 						if(strlen(popis) != 1025)
 							popis[strlen(popis)] = '\n';
