@@ -194,6 +194,7 @@ void stop(int pid)
 	if(pid != 0)
 		kill(pid, SIGTERM);
 	
+	run_process_on = 0;
 	return;
 }
 
