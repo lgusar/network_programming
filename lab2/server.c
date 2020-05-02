@@ -64,6 +64,10 @@ int main(int argc, char **argv)
 	
 	sock_tcp = w_socket(AF_INET, SOCK_STREAM, 0);
 	sock_udp = w_socket(AF_INET, SOCK_DGRAM, 0);
+
+	int on = 1;
+	w_setsockopt(sock_tcp, SOL_SOCKET, SO_REUSEADDR, &on, sizeof int);
+	w_setsockopt(sock_udp, SOL_SOCKET, SO_REUSEADDR, &on, sizeof int);
 	
 	memset(&serv_addr, 0, sizeof serv_addr);
 	serv_addr.sin_family = AF_INET;

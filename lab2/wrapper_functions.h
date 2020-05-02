@@ -203,3 +203,12 @@ int w_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, str
     }
     return return_value;
 }
+
+void w_setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
+{
+    int status = setsockopt(sockfd, level, optname, optval, optlen);
+    if(status < 0){
+        fprintf(stderr, "setsockopt() error: %s\n", strerror(errno));
+    }
+    return;
+}

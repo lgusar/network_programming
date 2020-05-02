@@ -86,6 +86,9 @@ void prog_tcp(char *ip, int port, char *payload)
 	
 	int sockfd = w_socket(AF_INET, SOCK_STREAM, 0);
 	
+	int broadcast_permission = 1;
+	w_setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast_permission, sizeof int);
+	
 	struct sockaddr_in addr;
 	struct addrinfo hints, *res;
 	
