@@ -1,11 +1,13 @@
 #include <stdbool.h>
 #include <string.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/shm.h>
 #include <signal.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -14,8 +16,15 @@
 
 #define PAYLOAD_MAX 1024+1
 
-
+int id;
 int *run_process_on;
+
+void delete(int sig)
+{
+	(void) shmdt((char *)run_process_on);
+	(void) shmctl(id, IPC_RMID, NULL);
+	exit(0);
+}
 
 void usage()
 {
@@ -215,7 +224,13 @@ void stop(int pid)
 
 int main(int argc, char **argv)
 {
-	int *run_process_on = 0;
+	id = shmget(IPC_PRIVATE, sizeof(int), 0600);
+	run_process_on = (int *) shmat(id, NULL, 0);
+	*run_process_on = 0;
+	
+	sigset(SIGINT, delete);
+	
+	printf("%d\n", *run_process_on);
 
 	if(argc != 3) usage();
 	
@@ -260,7 +275,8 @@ int main(int argc, char **argv)
 				prog_flag = 1;
 				break;
 			case '3':
-				if(prog_flag && !(*run_process_on)){
+				if(prog_flag && (*run_process_on) == 0){
+					printf("INSIDE IF\n");
 					*run_process_on = 1;
 					if((pid = fork()) == 0){
 						run(sockfd, message, payload);
@@ -282,5 +298,6 @@ int main(int argc, char **argv)
 	
 	close(sockfd);
 	
+	delete(0);
 	return 0;
 }
