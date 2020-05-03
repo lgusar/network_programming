@@ -190,8 +190,8 @@ void run(int sockfd, struct msg message, char *payload)
 				w_select(fdmax+1, &read_fds, NULL, NULL, NULL);
 				if(FD_ISSET(sockfd, &read_fds)){
 					char buf[PAYLOAD_MAX];
-					int addrlen = res->ai_addrlen;
-					int bytes_recv = w_recvfrom(sockfd, buf, PAYLOAD_MAX, 0, res->ai_addr, addrlen);
+					socklen_t addrlen = sizeof(res->ai_addrlen);
+					int bytes_recv = w_recvfrom(sockfd, buf, PAYLOAD_MAX, 0, res->ai_addr, &addrlen);
 					if(bytes_recv > 0){
 						printf("Received a packet from the victim.\n");
 						freeaddrinfo(res);
