@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <sys/time.h>
 #include "wrapper_functions.h"
 #include "msg.h"
 
@@ -163,6 +164,10 @@ void prog_udp(char *ip, int port, char *payload)
 
 void run(int sockfd, struct msg message, char *payload)
 {
+	struct timeval time;
+	time.tv_sec = 0;
+	time.tv_usec = 0;
+
 	fd_set master;
 	fd_set read_fds;
 	int fdmax;
@@ -193,7 +198,7 @@ void run(int sockfd, struct msg message, char *payload)
 				w_getaddrinfo(message.entry[i].ip_address, message.entry[i].port_number, &hints, &res);
 				
 				socklen_t addrlen = res->ai_addrlen;
-				w_select(fdmax+1, &read_fds, NULL, NULL, NULL);
+				w_select(fdmax+1, &read_fds, NULL, NULL, &time);
 				if(FD_ISSET(sockfd, &read_fds)){
 					if((w_recvfrom(sockfd, buf, PAYLOAD_MAX, 0, res->ai_addr, &addrlen)) > 0){
 						printf("Received something from victim.\n");
@@ -276,7 +281,6 @@ int main(int argc, char **argv)
 				break;
 			case '3':
 				if(prog_flag && (*run_process_on) == 0){
-					printf("INSIDE IF\n");
 					*run_process_on = 1;
 					if((pid = fork()) == 0){
 						run(sockfd, message, payload);
