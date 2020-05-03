@@ -15,7 +15,7 @@
 #define PAYLOAD_MAX 1024+1
 
 
-int *run_process_on = 0;
+int *run_process_on;
 
 void usage()
 {
@@ -118,7 +118,7 @@ void prog_tcp(char *ip, int port, char *payload)
 
 void prog_udp(char *ip, int port, char *payload)
 {
-	
+	int *run_process_on = 0;
 	printf("Connecting to UDP server...\n");
 	
 	memset(payload, 0, PAYLOAD_MAX);
