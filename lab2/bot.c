@@ -118,7 +118,6 @@ void prog_tcp(char *ip, int port, char *payload)
 
 void prog_udp(char *ip, int port, char *payload)
 {
-	int *run_process_on = 0;
 	printf("Connecting to UDP server...\n");
 	
 	memset(payload, 0, PAYLOAD_MAX);
@@ -216,6 +215,8 @@ void stop(int pid)
 
 int main(int argc, char **argv)
 {
+	int *run_process_on = 0;
+
 	if(argc != 3) usage();
 	
 	char *candc_ip = argv[1];
