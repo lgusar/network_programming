@@ -187,10 +187,9 @@ void run(int sockfd, struct msg message, char *payload)
 				socklen_t addrlen = res->ai_addrlen;
 				w_select(fdmax+1, &read_fds, NULL, NULL, NULL);
 				if(FD_ISSET(sockfd, &read_fds)){
-					if((w_recvfrom(listener, buf, PAYLOAD_MAX, 0, res->ai_addr, &addrlen)) > 0){
+					if((w_recvfrom(sockfd, buf, PAYLOAD_MAX, 0, res->ai_addr, &addrlen)) > 0){
 						printf("Received something from victim.\n");
 						freeaddrinfo(res);
-						close(listener);
 						return;
 					}
 				}
@@ -204,7 +203,6 @@ void run(int sockfd, struct msg message, char *payload)
 		}
 		sleep(1);
 	}
-	close(sockfd);
 }
 
 void stop(int pid)
