@@ -296,6 +296,7 @@ int main(int argc, char **argv)
 				break;
 			default:
 				fprintf(stderr, "Unknown command from CandC server.\nExiting...\n");
+				stop(pid);
 				exit(1);
 		}
 	}
