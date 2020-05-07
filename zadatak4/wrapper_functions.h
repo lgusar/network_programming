@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
+#include <stdlib.h>
 
 
 int w_socket(int family, int type, int protocol)

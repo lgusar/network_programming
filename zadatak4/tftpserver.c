@@ -7,6 +7,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <errno.h>
 #include <string.h>
 #include <getopt.h>
@@ -21,7 +22,7 @@ void usage()
     exit(1);
 }
 
-void log(char *string, bool daemon, int exit_status)
+void logger(char *string, bool daemon, int exit_status)
 {
     if(daemon){
         //TODO
@@ -38,7 +39,7 @@ int initialize(char *port)
 
     memset(&addr, 0, sizeof addr);
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
+    addr.sin_port = htons(atoi(port));
     addr.sin_addr.s_addr = INADDR_ANY;
 
     w_bind(sockfd, (struct sockaddr *)&addr, sizeof addr);
@@ -159,11 +160,11 @@ void process_request(struct rq_packet packet, struct sockaddr_in *cli_addr, sock
         }
 
         send_data_packet(clifd, cli_addr, addrlen, block_nr, buffer);
-        block_nr++;
+                block_nr++;
     }
     
     else{
-        log("Unknown mode", daemon, 1);
+        logger("Unknown mode", daemon, 1);
         send_error_packet(clifd);
         exit(1);
     }
@@ -189,7 +190,7 @@ void start(int listener, bool daemon)
             }
         }
         else{
-            log("Wrong opcode ", daemon, 2);
+            logger("Wrong opcode ", daemon, 2);
         }
     }
 }
