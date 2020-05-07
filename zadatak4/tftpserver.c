@@ -11,6 +11,8 @@
 #include <errno.h>
 #include <string.h>
 #include <getopt.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "wrapper_functions.h"
 #include "tftp_packets.h"
 
@@ -70,7 +72,7 @@ void send_data_packet(int sockfd, struct sockaddr_in *cli_addr, socklen_t addrle
     w_sendto(sockfd, &packet, sizeof packet, 0, (struct sockaddr *)cli_addr, addrlen);
 }
 
-void process_request(struct rq_packet packet, struct sockaddr_in *cli_addr, socklen_t addrlen, bool daemon)
+void process_request(struct rq_packet *packet, struct sockaddr_in *cli_addr, socklen_t addrlen, bool daemon)
 {
     int clifd = w_socket(AF_INET, SOCK_DGRAM, 0);
     FILE *fd;
@@ -79,7 +81,8 @@ void process_request(struct rq_packet packet, struct sockaddr_in *cli_addr, sock
     char mode[MAX_MODE];
     uint16_t block_nr = 1;
 
-    for(int i = 0; i < MAX_DATA + 2; i++){
+    int i = 0
+    for(; i < MAX_DATA + 2; i++){
         if(packet.data[i] == '\0'){
             filename[i] = packet.data[i];
             break;
@@ -133,7 +136,7 @@ void process_request(struct rq_packet packet, struct sockaddr_in *cli_addr, sock
                     block_nr++;
                     i = 0;
                 }
-                buffer[i] == '\n';
+                buffer[i] = '\n';
                 text++;
                 i++;
                 continue;
@@ -165,7 +168,7 @@ void process_request(struct rq_packet packet, struct sockaddr_in *cli_addr, sock
     
     else{
         logger("Unknown mode", daemon, 1);
-        send_error_packet(clifd);
+        send_error_packet(clifd, cli_addr, addrlen, "Wrong opcode", 0);
         exit(1);
     }
 
@@ -180,7 +183,7 @@ void start(int listener, bool daemon)
     struct rq_packet packet;
 
     while(true){
-        int bytes_recv = w_recvfrom(listener, &packet, sizeof packet, 0, (struct sockaddr *)&cli_addr, addrlen);
+        int bytes_recv = w_recvfrom(listener, &packet, sizeof packet, 0, (struct sockaddr *)&cli_addr, &addrlen);
         
         uint16_t opcode = ntohs(packet.opcode);
         if(opcode == 1){
