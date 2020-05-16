@@ -72,6 +72,218 @@ void pt(int udp_sock, struct bot *bots, int number_of_bots){
     }
 }
 
+void ptl(int udp_sock, struct bot *bots, int number_of_bots){
+    struct msg prog_tcp;
+    memset(&prog_tcp, 0, sizeof(prog_tcp));
+
+    prog_tcp.command = 1;
+    strcpy(prog_tcp.entry[0].ip_address, "127.0.0.1");
+    strcpy(prog_tcp.entry[0].port_number, "1234");
+
+    for(int i = 0; i < number_of_bots; i++){
+        
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, &prog_tcp, 39, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
+void pu(int udp_sock, struct bot *bots, int number_of_bots){
+    struct msg prog_udp;
+    memset(&prog_udp, 0, sizeof(prog_udp));
+
+    prog_udp.command = 2;
+    strcpy(prog_udp.entry[0].ip_address, "10.0.0.20");
+    strcpy(prog_udp.entry[0].port_number, "1234");
+
+    for(int i = 0; i < number_of_bots; i++){
+        
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, &prog_udp, 39, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
+void pul(int udp_sock, struct bot *bots, int number_of_bots){
+    struct msg prog_udp;
+    memset(&prog_udp, 0, sizeof(prog_udp));
+
+    prog_udp.command = 2;
+    strcpy(prog_udp.entry[0].ip_address, "127.0.0.1");
+    strcpy(prog_udp.entry[0].port_number, "1234");
+
+    for(int i = 0; i < number_of_bots; i++){
+        
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, &prog_udp, 39, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
+void r(int udp_sock, struct bot *bots, int number_of_bots){
+    struct msg prog_udp;
+    memset(&prog_udp, 0, sizeof(prog_udp));
+
+    prog_udp.command = 3;
+    strcpy(prog_udp.entry[0].ip_address, "127.0.0.1");
+    strcpy(prog_udp.entry[0].port_number, "3456");
+    strcpy(prog_udp.entry[1].ip_address, "127.0.0.1");
+    strcpy(prog_udp.entry[1].port_number, "6789");
+
+    for(int i = 0; i < number_of_bots; i++){
+        
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, &prog_udp, 1+(22+16)*2, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
+void r2(int udp_sock, struct bot *bots, int number_of_bots){
+    struct msg prog_udp;
+    memset(&prog_udp, 0, sizeof(prog_udp));
+
+    prog_udp.command = 3;
+    strcpy(prog_udp.entry[0].ip_address, "20.0.0.11");
+    strcpy(prog_udp.entry[0].port_number, "1111");
+    strcpy(prog_udp.entry[1].ip_address, "20.0.0.12");
+    strcpy(prog_udp.entry[1].port_number, "2222");
+    strcpy(prog_udp.entry[2].ip_address, "20.0.0.13");
+    strcpy(prog_udp.entry[2].port_number, "3333");
+
+    for(int i = 0; i < number_of_bots; i++){
+        
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, &prog_udp, 1+(22+16)*3, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
+void s(int udp_sock, struct bot *bots, int number_of_bots){
+    printf(" --> STOP\n");
+
+    struct msg prog_tcp;
+    memset(&prog_tcp, 0, sizeof(prog_tcp));
+
+    prog_tcp.command = 4;
+
+    for(int i = 0; i < number_of_bots; i++){
+        
+        printf("%s:%s <-- STOP\n", bots[i].ip_address, bots[i].port_number);
+
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, &prog_tcp, 1, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
+void l(struct bot *bots, int number_of_bots){
+    printf(" --> lista botova:\n");
+    
+    for(int i = 0; i < number_of_bots; i++){
+        printf("%s:%s; ", bots[i].ip_address, bots[i].port_number);
+    }
+
+    printf("\n");
+}
+
+void n(int udp_sock, struct bot *bots, int number_of_bots){
+    printf(" --> NEPOZNATA\n");
+    
+    char *buf = "NEPOZNATA\n";
+
+    for(int i = 0; i < number_of_bots; i++){
+        printf("%s:%s <-- NEPOZNATA\n", bots[i].ip_address, bots[i].port_number);
+
+        struct sockaddr_in addr;
+	    struct addrinfo hints, *res;
+
+        memset(&hints, 0, sizeof hints);
+        hints.ai_family = AF_INET;
+	
+	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
+        
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(atoi(bots[i].port_number));
+        addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+
+        w_sendto(udp_sock, buf, 10, 0, (struct sockaddr *)&addr, sizeof(addr));
+
+        freeaddrinfo(res);
+    }
+}
+
 void q(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_tcp;
     memset(&prog_tcp, 0, sizeof(prog_tcp));
@@ -252,9 +464,6 @@ int main(int argc, char **argv){
 
                 if(i == udp_sock){
                     process_udp(udp_sock, bots, &number_of_bots);
-                    for(int i = 0; i < number_of_bots; i++){
-                        printf("%s %s\n", bots[i].ip_address, bots[i].port_number);
-                    }
                 }
 
                 if(i == tcp_sock){
