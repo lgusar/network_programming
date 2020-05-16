@@ -382,7 +382,7 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
         char ip[INET_ADDRSTRLEN];
         char port[16];
         w_inet_ntop(AF_INET, &(cli_addr.sin_addr.s_addr), ip, INET_ADDRSTRLEN);
-        sprintf(port, "%d", cli_addr.sin_port);
+        sprintf(port, "%d", ntohs(cli_addr.sin_port));
         printf("Bot klijent %s:%s\n", ip, port);
 
         strcpy(bots[*number_of_bots].ip_address, ip);
