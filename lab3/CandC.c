@@ -157,6 +157,19 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
     }
 }
 
+void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
+    char buf[PAYLOAD_MAX];
+    memset(buf, 0, PAYLOAD_MAX);
+
+    struct sockaddr_in cli_addr;
+    socklen_t addr_len = sizeof cli_addr;
+    int bytes_recv = w_recvfrom(sock_udp, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, &addr_len);
+
+    if(strncmp(buf, "REG\n", 4) == 0){
+        print("DOSLA PORUKA REG OD BOTA\n");
+    }
+}
+
 void init_sockets(int udp_port, int tcp_port, int *udp_sock, int *tcp_sock){
     struct sockaddr_in serv_addr;
 
@@ -230,7 +243,7 @@ int main(int argc, char **argv){
                 }
 
                 if(i == udp_sock){
-                    //do something
+                    process_udp(udp_sock, bots, &number_of_bots);
                 }
 
                 if(i == tcp_sock){
