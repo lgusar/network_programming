@@ -168,7 +168,7 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
     if(strncmp(buf, "REG\n", 4) == 0){
         char *ip;
         char *port = itoa(cli_addr.sin_port);
-        w_inet_ntop(AF_INET, cli_addr.sin_addr, ip, 22);
+        w_inet_ntop(AF_INET, &(cli_addr.sin_addr), ip, INET_ADDRSTRLEN);
         printf("Bot klijent %s:%s\n", ip, port);
     }
 }
