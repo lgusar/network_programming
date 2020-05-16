@@ -174,7 +174,7 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
 
         strcpy(bots[*number_of_bots].ip_address, ip);
         strcpy(bots[*number_of_bots].port_number, port);
-        *(number_of_bots)++;
+        *number_of_bots += 1;
     }
 }
 
