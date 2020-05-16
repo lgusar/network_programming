@@ -252,7 +252,7 @@ int main(int argc, char **argv){
 
                 if(i == udp_sock){
                     process_udp(udp_sock, bots, &number_of_bots);
-                    for(int i = 0; i < *number_of_bots; i++){
+                    for(int i = 0; i < number_of_bots; i++){
                         printf("%s %s\n", bots[i].ip_address, bots[i].port_number);
                     }
                 }
