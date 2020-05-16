@@ -63,10 +63,10 @@ void pt(int udp_sock, struct bot *bots, int number_of_bots){
 	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
         
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(bots[i].port_number);
+        addr.sin_port = htons(atoi(ots[i].port_number));
         addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
-        w_sendto(udp_sock, &prog_tcp, 39, 0, (struct sockaddr *)addr, sizeof(addr));
+        w_sendto(udp_sock, &prog_tcp, 39, 0, (struct sockaddr *)&addr, sizeof(addr));
 
         freeaddrinfo(res);
     }
@@ -89,10 +89,10 @@ void q(int udp_sock, struct bot *bots, int number_of_bots){
 	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
         
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(bots[i].port_number);
+        addr.sin_port = htons(atoi(bots[i].port_number));
         addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
-        w_sendto(udp_sock, &prog_tcp, 1, 0, (struct sockaddr *)addr, sizeof(addr));
+        w_sendto(udp_sock, &prog_tcp, 1, 0, (struct sockaddr *)&addr, sizeof(addr));
 
         freeaddrinfo(res);
     }
@@ -171,16 +171,16 @@ void init_sockets(int udp_port, int tcp_port, int *udp_sock, int *tcp_sock){
     serv_addr.sin_port = htons(tcp_port);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     
-    w_bind(tcp_sock, (struct sockaddr *)&serv_addr, sizeof serv_addr);
+    w_bind(*tcp_sock, (struct sockaddr *)&serv_addr, sizeof serv_addr);
     
     memset(&serv_addr, 0, sizeof serv_addr);
 	serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(udp_port);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     
-    w_bind(udp_sock, (struct sockaddr *)&serv_addr, sizeof serv_addr);
+    w_bind(*udp_sock, (struct sockaddr *)&serv_addr, sizeof serv_addr);
 
-	w_listen(tcp_sock, BACKLOG);
+	w_listen(*tcp_sock, BACKLOG);
 }
 
 int main(int argc, char **argv){
@@ -195,20 +195,20 @@ int main(int argc, char **argv){
 
     int udp_sock;
     int tcp_sock;
-    int stdin_fd = 0
+    int stdin_fd = 0;
 
-    init_sockets(udp_port, tcp_port, udp_sock, tcp_sock);
+    init_sockets(udp_port, tcp_port, &udp_sock, &tcp_sock);
 
     fd_set master;
     fd_set read_fds;
     int fdmax;
 
     FD_SET(stdin_fd, &master);
-	FD_SET(sock_tcp, &master);
-	FD_SET(sock_udp, &master);
+	FD_SET(tcp_sock, &master);
+	FD_SET(udp_sock, &master);
 	
-	if(sock_tcp > sock_udp) fdmax = sock_tcp;
-	else fdmax = sock_udp;
+	if(tcp_sock > udp_sock) fdmax = tcp_sock;
+	else fdmax = udp_sock;
 
     struct bot bots[BOTS_MAX];
     int number_of_bots = 0;
@@ -243,8 +243,8 @@ int main(int argc, char **argv){
 
 exiting:
 
-	close(sock_tcp);
-	close(sock_udp);
+	close(tcp_sock);
+	close(udp_sock);
 
     return 0;
 }
