@@ -104,43 +104,43 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
 
     read(stdin_fd, buf, PAYLOAD_MAX);
 
-    if(!strcmp(buf, "pt")){
+    if(!strcmp(buf, "pt\n")){
         pt(udp_sock, bots, number_of_bots);
     }
     
-    else if(!strcmp(buf, "pt1")){
+    else if(!strcmp(buf, "pt1\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "pu")){
+    else if(!strcmp(buf, "pu\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "pu1")){
+    else if(!strcmp(buf, "pu1\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "r")){
+    else if(!strcmp(buf, "r\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "r2")){
+    else if(!strcmp(buf, "r2\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "s")){
+    else if(!strcmp(buf, "s\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "l")){
+    else if(!strcmp(buf, "l\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "n")){
+    else if(!strcmp(buf, "n\n")){
         //do something
     }
 
-    else if(!strcmp(buf, "q")){
+    else if(!strcmp(buf, "q\n")){
         printf(" --> QUIT\n");
         printf("Kraj programa.\n");
         q(udp_sock, bots, number_of_bots);
