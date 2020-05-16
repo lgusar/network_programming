@@ -285,6 +285,9 @@ void n(int udp_sock, struct bot *bots, int number_of_bots){
 }
 
 void q(int udp_sock, struct bot *bots, int number_of_bots){
+    printf(" --> QUIT\n");
+    printf("Kraj programa.\n");
+    
     struct msg prog_tcp;
     memset(&prog_tcp, 0, sizeof(prog_tcp));
 
@@ -320,47 +323,45 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
         pt(udp_sock, bots, number_of_bots);
     }
     
-    else if(!strcmp(buf, "pt1\n")){
-        //do something
+    else if(!strcmp(buf, "ptl\n")){
+        ptl(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "pu\n")){
-        //do something
+        pu(udp_sock, bots, number_of_bots);
     }
 
-    else if(!strcmp(buf, "pu1\n")){
-        //do something
+    else if(!strcmp(buf, "pul\n")){
+        pu2(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "r\n")){
-        //do something
+        r(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "r2\n")){
-        //do something
+        r2(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "s\n")){
-        //do something
+        s(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "l\n")){
-        //do something
+        l(bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "n\n")){
-        //do something
+        n(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "q\n")){
-        printf(" --> QUIT\n");
-        printf("Kraj programa.\n");
         q(udp_sock, bots, number_of_bots);
         *quit_flag = true;
     }
 
     else if(!strcmp(buf, "h")){
-        //do something
+        print_commands();
     }
 
     else{
