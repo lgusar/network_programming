@@ -63,7 +63,7 @@ void pt(int udp_sock, struct bot *bots, int number_of_bots){
 	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
         
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(atoi(ots[i].port_number));
+        addr.sin_port = htons(atoi(bots[i].port_number));
         addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
         w_sendto(udp_sock, &prog_tcp, 39, 0, (struct sockaddr *)&addr, sizeof(addr));
