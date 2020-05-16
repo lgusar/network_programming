@@ -332,7 +332,7 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
     }
 
     else if(!strcmp(buf, "pul\n")){
-        pu2(udp_sock, bots, number_of_bots);
+        pul(udp_sock, bots, number_of_bots);
     }
 
     else if(!strcmp(buf, "r\n")){
