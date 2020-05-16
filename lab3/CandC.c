@@ -48,7 +48,7 @@ void pt(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_tcp;
     memset(&prog_tcp, 0, sizeof(prog_tcp));
 
-    prog_tcp.command = 1;
+    prog_tcp.command = '1';
     strcpy(prog_tcp.entry[0].ip_address, "10.0.0.20");
     strcpy(prog_tcp.entry[0].port_number, "1234");
 
@@ -76,7 +76,7 @@ void ptl(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_tcp;
     memset(&prog_tcp, 0, sizeof(prog_tcp));
 
-    prog_tcp.command = 1;
+    prog_tcp.command = '1';
     strcpy(prog_tcp.entry[0].ip_address, "127.0.0.1");
     strcpy(prog_tcp.entry[0].port_number, "1234");
 
@@ -104,7 +104,7 @@ void pu(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_udp;
     memset(&prog_udp, 0, sizeof(prog_udp));
 
-    prog_udp.command = 2;
+    prog_udp.command = '2';
     strcpy(prog_udp.entry[0].ip_address, "10.0.0.20");
     strcpy(prog_udp.entry[0].port_number, "1234");
 
@@ -132,7 +132,7 @@ void pul(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_udp;
     memset(&prog_udp, 0, sizeof(prog_udp));
 
-    prog_udp.command = 2;
+    prog_udp.command = '2';
     strcpy(prog_udp.entry[0].ip_address, "127.0.0.1");
     strcpy(prog_udp.entry[0].port_number, "1234");
 
@@ -160,7 +160,7 @@ void r(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_udp;
     memset(&prog_udp, 0, sizeof(prog_udp));
 
-    prog_udp.command = 3;
+    prog_udp.command = '3';
     strcpy(prog_udp.entry[0].ip_address, "127.0.0.1");
     strcpy(prog_udp.entry[0].port_number, "3456");
     strcpy(prog_udp.entry[1].ip_address, "127.0.0.1");
@@ -190,7 +190,7 @@ void r2(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_udp;
     memset(&prog_udp, 0, sizeof(prog_udp));
 
-    prog_udp.command = 3;
+    prog_udp.command = '3';
     strcpy(prog_udp.entry[0].ip_address, "20.0.0.11");
     strcpy(prog_udp.entry[0].port_number, "1111");
     strcpy(prog_udp.entry[1].ip_address, "20.0.0.12");
@@ -224,7 +224,7 @@ void s(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_tcp;
     memset(&prog_tcp, 0, sizeof(prog_tcp));
 
-    prog_tcp.command = 4;
+    prog_tcp.command = '4';
 
     for(int i = 0; i < number_of_bots; i++){
         
