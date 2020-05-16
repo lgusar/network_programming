@@ -1,13 +1,17 @@
 #include <stdbool.h>
 #include <string.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/shm.h>
+#include <signal.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <sys/time.h>
 
 #include "wrapper_functions.h"
 #include "msg.h"
@@ -42,7 +46,7 @@ void print_commands(){
 
 void pt(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_tcp;
-    memset(&prog_tcp, 0, sizeof(msg));
+    memset(&prog_tcp, 0, sizeof(prog_tcp));
 
     prog_tcp.command = 1;
     strcpy(prog_tcp.entry[0].ip_address, "10.0.0.20");
@@ -59,7 +63,7 @@ void pt(int udp_sock, struct bot *bots, int number_of_bots){
 	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
         
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(port);
+        addr.sin_port = htons(bots[i].port_number);
         addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
         w_sendto(udp_sock, &prog_tcp, 39, 0, (struct sockaddr *)addr, sizeof(addr));
@@ -70,7 +74,7 @@ void pt(int udp_sock, struct bot *bots, int number_of_bots){
 
 void q(int udp_sock, struct bot *bots, int number_of_bots){
     struct msg prog_tcp;
-    memset(&prog_tcp, 0, sizeof(msg));
+    memset(&prog_tcp, 0, sizeof(prog_tcp));
 
     prog_tcp.command = 0;
 
@@ -85,7 +89,7 @@ void q(int udp_sock, struct bot *bots, int number_of_bots){
 	    w_getaddrinfo(bots[i].ip_address, NULL, &hints, &res);
         
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(port);
+        addr.sin_port = htons(bots[i].port_number);
         addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
         w_sendto(udp_sock, &prog_tcp, 1, 0, (struct sockaddr *)addr, sizeof(addr));
@@ -139,7 +143,7 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
     else if(!strcmp(buf, "q")){
         printf(" --> QUIT\n");
         printf("Kraj programa.\n");
-        q();
+        q(udp_sock, bots, number_of_bots);
         quit_flag = true;
     }
 
@@ -167,16 +171,16 @@ void init_sockets(int udp_port, int tcp_port, int *udp_sock, int *tcp_sock){
     serv_addr.sin_port = htons(tcp_port);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     
-    w_bind(sock_tcp, (struct sockaddr *)&serv_addr, sizeof serv_addr);
+    w_bind(tcp_sock, (struct sockaddr *)&serv_addr, sizeof serv_addr);
     
     memset(&serv_addr, 0, sizeof serv_addr);
 	serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(udp_port);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     
-    w_bind(sock_udp, (struct sockaddr *)&serv_addr, sizeof serv_addr);
+    w_bind(udp_sock, (struct sockaddr *)&serv_addr, sizeof serv_addr);
 
-	w_listen(sock_tcp, BACKLOG);
+	w_listen(tcp_sock, BACKLOG);
 }
 
 int main(int argc, char **argv){
