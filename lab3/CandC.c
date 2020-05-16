@@ -98,7 +98,7 @@ void q(int udp_sock, struct bot *bots, int number_of_bots){
     }
 }
 
-void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, int number_of_bots, bool quit_flag){
+void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, int number_of_bots, bool *quit_flag){
     char buf[PAYLOAD_MAX];
     memset(buf, 0, PAYLOAD_MAX);
 
@@ -144,7 +144,7 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
         printf(" --> QUIT\n");
         printf("Kraj programa.\n");
         q(udp_sock, bots, number_of_bots);
-        quit_flag = true;
+        *quit_flag = true;
     }
 
     else if(!strcmp(buf, "h")){
@@ -225,7 +225,7 @@ int main(int argc, char **argv){
             if(FD_ISSET(i, &read_fds)){
 
                 if(i == stdin_fd){
-                    process_stdin(stdin_fd, udp_sock, tcp_sock, bots, number_of_bots, quit_flag);
+                    process_stdin(stdin_fd, udp_sock, tcp_sock, bots, number_of_bots, &quit_flag);
                     if(quit_flag) goto exiting;
                 }
 
