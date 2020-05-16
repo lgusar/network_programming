@@ -137,6 +137,8 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
     }
 
     else if(!strcmp(buf, "q")){
+        printf(" --> QUIT\n");
+        printf("Kraj programa.\n");
         q();
         quit_flag = true;
     }
