@@ -166,7 +166,10 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
     int bytes_recv = w_recvfrom(udp_sock, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, &addr_len);
 
     if(strncmp(buf, "REG\n", 4) == 0){
-        printf("DOSLA PORUKA REG OD BOTA\n");
+        char *ip;
+        char *port = itoa(cli_addr.sin_port);
+        w_inet_ntop(AF_INET, cli_addr.sin_addr, ip, 22);
+        printf("Bot klijent %s:%s\n", ip, port);
     }
 }
 
