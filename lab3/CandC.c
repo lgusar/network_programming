@@ -163,10 +163,10 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
 
     struct sockaddr_in cli_addr;
     socklen_t addr_len = sizeof cli_addr;
-    int bytes_recv = w_recvfrom(sock_udp, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, &addr_len);
+    int bytes_recv = w_recvfrom(udp_sock, buf, PAYLOAD_MAX, 0, (struct sockaddr *)&cli_addr, &addr_len);
 
     if(strncmp(buf, "REG\n", 4) == 0){
-        print("DOSLA PORUKA REG OD BOTA\n");
+        printf("DOSLA PORUKA REG OD BOTA\n");
     }
 }
 
