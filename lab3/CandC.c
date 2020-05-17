@@ -395,8 +395,9 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bo
     char buf[PAYLOAD_MAX];
     memset(buf, 0, PAYLOAD_MAX);
 
+    sockaddr_in cli_addr;
 	socklen_t addrlen = sizeof cli_addr;
-    int clifd = w_accept(sock_tcp, (struct sockaddr *)&cli_addr, &addrlen);
+    int clifd = w_accept(tcp_sock, (struct sockaddr *)&cli_addr, &addrlen);
     
     printf("Bot connected.\n");
     
