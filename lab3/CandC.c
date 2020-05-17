@@ -39,7 +39,7 @@ void print_commands(){
     printf("      struct MSG:3 20.0.0.11 1111 20.0.0.12 2222 20.0.0.13 dec-notes\n");
     printf("s     bot klijentima salje poruku STOP (struct MSG:4)\n");
     printf("l     lokalni ispis adresa bot klijenata\n");
-    printf("n     salje poruku: ’NEPOZNATA’\\n\n");
+    printf("n     salje poruku: \"NEPOZNATA\"\\n\n");
     printf("q     bot klijentima salje poruku QUIT i zavrsava s radom (struct MSG:0)\n");
     printf("h     ispis naredbi\n");
 }
@@ -408,7 +408,6 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bo
 
     printf("%s\n", ptr);
     close(clifd);
-
 }
 
 void init_sockets(int udp_port, int tcp_port, int *udp_sock, int *tcp_sock){
