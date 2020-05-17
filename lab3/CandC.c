@@ -392,8 +392,9 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
 }
 
 void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bots){
-
+    char buf[PAYLOAD_MAX];
     memset(buf, 0, PAYLOAD_MAX);
+    
 	addrlen = sizeof cli_addr;
     clifd = w_accept(sock_tcp, (struct sockaddr *)&cli_addr, &addrlen);
     
