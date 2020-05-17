@@ -391,7 +391,7 @@ void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
     }
 }
 
-void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bots){
+void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bots, bool *quit_flag){
     char buf[PAYLOAD_MAX];
     memset(buf, 0, PAYLOAD_MAX);
 
@@ -445,9 +445,6 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bo
         else if(!strcmp(ptr, "/bot/quit")){
             q(udp_sock, bots, number_of_bots);
             *quit_flag = true;
-        }
-
-        else{
         }
     }
 
@@ -531,7 +528,7 @@ int main(int argc, char **argv){
                 }
 
                 if(i == tcp_sock){
-                    process_tcp(tcp_sock, udp_sock, bots, &number_of_bots);
+                    process_tcp(tcp_sock, udp_sock, bots, number_of_bots, &quit_flag);
                 }
             }
         }
