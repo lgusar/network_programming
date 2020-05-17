@@ -529,6 +529,7 @@ int main(int argc, char **argv){
 
                 if(i == tcp_sock){
                     process_tcp(tcp_sock, udp_sock, bots, number_of_bots, &quit_flag);
+                    if(quit_flag) goto exiting;
                 }
             }
         }
