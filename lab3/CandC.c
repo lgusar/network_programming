@@ -401,8 +401,12 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bo
         
     w_recv(clifd, buf, PAYLOAD_MAX, 0);
 
-    printf("%s", buf);
+    char *delim = " ";
+    
+    char *ptr = strtok(buf, delim);
+    ptr = strtok(NULL, delim);
 
+    printf("%s\n", ptr);
     close(clifd);
 
 }
