@@ -29,18 +29,18 @@ void usage(){
 }
 
 void print_commands(){
-    printf("pt    bot klijentima šalje poruku PROG_TCP (struct MSG:1 10.0.0.20 1234\\n)\n");
-    printf("ptl   bot klijentima šalje poruku PROG_TCP (struct MSG:1 127.0.0.1 1234\\n)\n");
-    printf("pu    bot klijentima šalje poruku PROG_UDP (struct MSG:2 10.0.0.20 1234\\n)\n");
-    printf("pul   bot klijentima šalje poruku PROG_UDP (struct MSG:2 127.0.0.1 1234\\n)\n");
-    printf("r     bot klijentima šalje poruku RUN s adresama lokalnog računala:\n");
+    printf("pt    bot klijentima salje poruku PROG_TCP (struct MSG:1 10.0.0.20 1234\\n)\n");
+    printf("ptl   bot klijentima salje poruku PROG_TCP (struct MSG:1 127.0.0.1 1234\\n)\n");
+    printf("pu    bot klijentima salje poruku PROG_UDP (struct MSG:2 10.0.0.20 1234\\n)\n");
+    printf("pul   bot klijentima salje poruku PROG_UDP (struct MSG:2 127.0.0.1 1234\\n)\n");
+    printf("r     bot klijentima salje poruku RUN s adresama lokalnog računala:\n");
     printf("      struct MSG:3 127.0.0.1 vat localhost 6789\\n\n");
-    printf("r2    bot klijentima šalje poruku RUN s adresama računala iz IMUNES-a:\n");
+    printf("r2    bot klijentima salje poruku RUN s adresama racunala iz IMUNES-a:\n");
     printf("      struct MSG:3 20.0.0.11 1111 20.0.0.12 2222 20.0.0.13 dec-notes\n");
-    printf("s     bot klijentima šalje poruku STOP (struct MSG:4)\n");
+    printf("s     bot klijentima salje poruku STOP (struct MSG:4)\n");
     printf("l     lokalni ispis adresa bot klijenata\n");
-    printf("n     šalje poruku: ’NEPOZNATA’\\n\n");
-    printf("q     bot klijentima šalje poruku QUIT i završava s radom (struct MSG:0)\n");
+    printf("n     salje poruku: ’NEPOZNATA’\\n\n");
+    printf("q     bot klijentima salje poruku QUIT i zavrsava s radom (struct MSG:0)\n");
     printf("h     ispis naredbi\n");
 }
 
@@ -486,7 +486,7 @@ int main(int argc, char **argv){
                 }
 
                 if(i == tcp_sock){
-                    //do something
+                    process_tcp(tcp_sock, udp_sock, bots, &number_of_bots);
                 }
             }
         }
