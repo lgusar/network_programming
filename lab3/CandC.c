@@ -54,7 +54,7 @@ void print_commands(){
     printf("ptl   bot klijentima salje poruku PROG_TCP (struct MSG:1 127.0.0.1 1234\\n)\n");
     printf("pu    bot klijentima salje poruku PROG_UDP (struct MSG:2 10.0.0.20 1234\\n)\n");
     printf("pul   bot klijentima salje poruku PROG_UDP (struct MSG:2 127.0.0.1 1234\\n)\n");
-    printf("r     bot klijentima salje poruku RUN s adresama lokalnog računala:\n");
+    printf("r     bot klijentima salje poruku RUN s adresama lokalnog racunala:\n");
     printf("      struct MSG:3 127.0.0.1 vat localhost 6789\\n\n");
     printf("r2    bot klijentima salje poruku RUN s adresama racunala iz IMUNES-a:\n");
     printf("      struct MSG:3 20.0.0.11 1111 20.0.0.12 2222 20.0.0.13 dec-notes\n");
