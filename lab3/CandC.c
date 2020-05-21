@@ -381,7 +381,7 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
         *quit_flag = true;
     }
 
-    else if(!strcmp(buf, "h")){
+    else if(!strcmp(buf, "h\n")){
         print_commands();
     }
 
