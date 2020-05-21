@@ -490,6 +490,7 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
         }
 
         else if(!strcmp(ptr, "/bot/prog_udp")){
+			printf("dosao u prog udp\n");
             w_send(clifd, ok, strlen(ok), 0);
             pu(udp_sock, bots, number_of_bots);
         }
