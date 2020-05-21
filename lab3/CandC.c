@@ -406,45 +406,59 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
     char *ptr = strtok(buf, delim);
 
     if(!strcmp(ptr, "GET")){
-        w_send(clifd, ptr, strlen(ptr), 0);
+        char *ok = "HTTP/1.1 200 OK\n";
+        char *method_not_allowed = "HTTP/1.1 405 Method Not Allowed\n";
 
         ptr = strtok(NULL, delim);
 
         if(!strcmp(ptr, "/bot/prog_tcp")){
+            w_send(clifd, ok, strlen(ptr), 0);
             pt(udp_sock, bots, number_of_bots);
         }
         
         else if(!strcmp(ptr, "/bot/prog_tcp_localhost")){
+            w_send(clifd, ok, strlen(ptr), 0);
             ptl(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/prog_udp")){
+            w_send(clifd, ok, strlen(ptr), 0);
             pu(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/prog_udp_localhost")){
+            w_send(clifd, ok, strlen(ptr), 0);
             pul(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/run")){
+            w_send(clifd, ok, strlen(ptr), 0);
             r(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/run2")){
+            w_send(clifd, ok, strlen(ptr), 0);
             r2(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/run")){
+            w_send(clifd, ok, strlen(ptr), 0);
             s(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/list")){
+            w_send(clifd, ok, strlen(ptr), 0);
             l(bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/quit")){
+            w_send(clifd, ok, strlen(ptr), 0);
             q(udp_sock, bots, number_of_bots);
             *quit_flag = true;
+        }
+
+        else{
+            w_send(clifd, method_not_allowed, strlen(ptr), 0);
         }
     }
 
