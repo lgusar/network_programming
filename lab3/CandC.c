@@ -395,8 +395,14 @@ void send_file(int tcp_sock, char *requested_file, int clifd){
     char buffer[BUFSIZE];
     int fd, ret;
     long len;
+    
+    char temp[strlen(requested_file)];
+    for(int i = 1; i < strlen(requested_file); i++){
+		temp[i-1] = requested_file[i];
+		temp[i] = '\0';
+	}
 
-    if((fd = open(requested_file, 0)) == -1){
+    if((fd = open(temp, 0)) == -1){
         sprintf(buffer, "HTTP/1.1 404 Not Found\n");
         w_send(clifd, buffer, strlen(buffer), 0);
         return;
