@@ -394,16 +394,16 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
 void send_file(int tcp_sock, char *requested_file, int clifd){
     char buffer[BUFSIZE];
     int fd, ret;
-	long len;
-	
+    long len;
+
     if((fd = open(requested_file, 0)) == -1){
         sprintf(buffer, "HTTP/1.1 404 Not Found\n");
         w_send(clifd, buffer, strlen(buffer), 0);
         return;
     }
 
-    char fstr[5];
-    char tmp[5];
+    char fstr[6];
+    char tmp[6];
     int j = 0;
     for(int i = strlen(requested_file) - 1; i >= 0; i--){
         if(requested_file[i] == '.'){
@@ -424,6 +424,7 @@ void send_file(int tcp_sock, char *requested_file, int clifd){
 
     w_write(clifd, buffer, strlen(buffer));
     while (	(ret = read(fd, buffer, BUFSIZE)) > 0 ) {
+        printf("%s\n", buffer);
 		(void)w_write(clifd,buffer,ret);
 	}
 
@@ -488,7 +489,6 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
         }
 
         else if(!strcmp(ptr, "/bot/prog_udp_localhost")){
-			printf("Uso u pul\n");
             w_send(clifd, ok, strlen(ok), 0);
             pul(udp_sock, bots, number_of_bots);
         }
