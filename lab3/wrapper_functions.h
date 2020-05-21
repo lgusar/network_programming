@@ -212,3 +212,12 @@ void w_setsockopt(int sockfd, int level, int optname, const void *optval, sockle
     }
     return;
 }
+
+ssize_t w_write(int fd, const void *buf, size_t count)
+{
+    int bytes = write(fd, buf, count);
+    if(bytes < 0){
+        fprintf(stderr, "write() error: %s\n", strerror(errno));
+    }
+    return bytes;
+}
