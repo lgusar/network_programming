@@ -12,6 +12,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/time.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "wrapper_functions.h"
 #include "msg.h"
@@ -391,8 +393,9 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
 
 void send_file(int tcp_sock, char *requested_file, int clifd){
     char buffer[BUFSIZE];
-    int fd, len, ret;
-
+    int fd, ret;
+	long len;
+	
     if((fd = open(requested_file, 0)) == -1){
         sprintf(buffer, "HTTP/1.1 404 Not Found\n");
         w_send(clifd, buffer, strlen(buffer), 0);
@@ -406,11 +409,11 @@ void send_file(int tcp_sock, char *requested_file, int clifd){
         if(requested_file[i] == '.'){
             break;
         }
-        tmp[j] = requested_file[i]
+        tmp[j] = requested_file[i];
         j++;
     } 
 
-    for(i = 0; j >= 0; i++){
+    for(int i = 0; j >= 0; i++){
         fstr[i] = tmp[j];
         j--;
     }
@@ -485,6 +488,7 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
         }
 
         else if(!strcmp(ptr, "/bot/prog_udp_localhost")){
+			printf("Uso u pul\n");
             w_send(clifd, ok, strlen(ok), 0);
             pul(udp_sock, bots, number_of_bots);
         }
@@ -506,12 +510,12 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
 
         else if(!strcmp(ptr, "/bot/list")){
             w_send(clifd, ok, strlen(ok), 0);
-            l(udp_sock, bots, number_of_bots);
+            l(bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/stop")){
             w_send(clifd, ok, strlen(ok), 0);
-            s(bots, number_of_bots);
+            s(udp_sock, bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/quit")){
