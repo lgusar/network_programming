@@ -365,7 +365,7 @@ void process_stdin(int stdin_fd, int udp_sock, int tcp_sock, struct bot *bots, i
     }
 
     else{
-        printf("Nepoznata naredba: %s\n", buf);
+        fprintf(stderr, "Nepoznata naredba: %s\n", buf);
         print_commands();
     }
 }
@@ -448,7 +448,12 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
 
         else if(!strcmp(ptr, "/bot/list")){
             w_send(clifd, ok, strlen(ok), 0);
-            l(bots, number_of_bots);
+            l(udp_sock, bots, number_of_bots);
+        }
+
+        else if(!strcmp(ptr, "/bot/stop")){
+            w_send(clifd, ok, strlen(ok), 0);
+            s(bots, number_of_bots);
         }
 
         else if(!strcmp(ptr, "/bot/quit")){
@@ -456,6 +461,7 @@ void process_tcp(int tcp_sock, int udp_sock, struct bot *bots, int number_of_bot
             q(udp_sock, bots, number_of_bots);
             *quit_flag = true;
         }
+        
 
         else{
             w_send(clifd, method_not_allowed, strlen(method_not_allowed), 0);
