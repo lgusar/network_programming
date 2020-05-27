@@ -193,7 +193,7 @@ void refresh_file(char *url, char *log){
 
     fclose(fd);
 
-    FILE *fd = fopen(log, "a");
+    fd = fopen(log, "a");
 
     char address[128];
     get_address(url, address);
@@ -201,7 +201,7 @@ void refresh_file(char *url, char *log){
     get_filepath(url, filepath);
 
     char getpacket[1024];
-    sprintf(getpacket, "GET %s HTTP/1.1\r\nHost: %s\r\nRange: bytes=%d-\r\nConnection: close\r\n\r\n", filepath, size, address);
+    sprintf(getpacket, "GET %s HTTP/1.1\r\nHost: %s\r\nRange: bytes=%d-\r\nConnection: close\r\n\r\n", filepath, address, size);
     
     char buffer[MAXBUFFER];
 	memset(buffer, 0, MAXBUFFER);
@@ -256,17 +256,19 @@ void refresh_file(char *url, char *log){
 }
 
 void process_udp(char *buffer, int socknr, char *url){
+	char log[5];
     if(socknr == 1){
-        char *log = "log1";
+        strcpy(log, "log1");
     }
 
-    if(socknr == 2){
-        char *log = "log2";
+    else if(socknr == 2){
+        strcpy(log, "log2");
     }
 
-    if(socknr == 3){
-        char *log = "log3";
+    else if(socknr == 3){
+        strcpy(log, "log3");
     }
+    else strcpy(log, "aaaa");
 
     if(!strcmp(buffer, "stat\n")){
         
@@ -329,7 +331,7 @@ int main(int argc, char **argv){
 
     memset(&serv_addr, 0, sizeof serv_addr);
 	serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(atoi(p2)));
+    serv_addr.sin_port = htons(atoi(p2));
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     
     w_bind(s2, (struct sockaddr *)&serv_addr, sizeof serv_addr);
@@ -378,6 +380,8 @@ int main(int argc, char **argv){
                     w_recv(s3, buffer, 20, 0);
                     process_udp(buffer, 3, url3);
                 }
-
+			}
+		}
+	}
     return 0;
 }
