@@ -63,33 +63,35 @@ void get_file(char *url, char *log){
     char filepath[128];
     get_filepath(url, filepath);
 
-    // char *getpacket;
-    // sprintf(getpacket, "GET %s HTTP/1.1\nHost: %s\nConnection: close\n\n", file, address);
-    // char buffer[MAXBUFFER];
+    char *getpacket;
+    sprintf(getpacket, "GET %s HTTP/1.1\nHost: %s\nConnection: close\n\n", file, address);
+    char buffer[MAXBUFFER];
 
-    // int port = HTTP;
+    int port = HTTP;
     
-    // int sock = w_socket(AF_INET, SOCK_STREAM, 0);
+    int sock = w_socket(AF_INET, SOCK_STREAM, 0);
 
-    // struct sockaddr_in addr;
-    // struct addrinfo hints, *res;
+    struct sockaddr_in addr;
+    struct addrinfo hints, *res;
 
-    // memset(&hints, 0, sizeof hints);
-    // hints.ai_family = AF_INET;
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_INET;
 
-    // w_getaddrinfo(address, NULL, &hints, &res);
+    w_getaddrinfo(address, NULL, &hints, &res);
     
-    // addr.sin_family = AF_INET;
-    // addr.sin_port = htons(port);
-    // addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(port);
+    addr.sin_addr = ((struct sockaddr_in *)res->ai_addr)->sin_addr;
 
-    // w_connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+    w_connect(sock, (struct sockaddr *)&addr, sizeof(addr));
 
-    // w_send(sock, getpacket, strlen(getpacket), 0);
+    w_send(sock, getpacket, strlen(getpacket), 0);
 
+    w_recv(sock, buf, MAXBUFFER, 0);
 
+    printf("%s\n", buf);
 
-    // close(sock);
+    close(sock);
 }
 
 int main(int argc, char **argv){
