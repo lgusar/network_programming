@@ -26,7 +26,7 @@ void usage(){
     exit(1);
 }
 
-char *get_address(char *url){
+void get_address(char *url, char *address){
     char *delim = "/";
     char tmp[strlen(url)];
 
@@ -36,11 +36,10 @@ char *get_address(char *url){
     token = strtok(tmp, delim);
     token = strtok(NULL, delim);
 
-    printf("%s\n", token);
-    return token;
+    strcpy(address, token);
 }
 
-char *get_filepath(char *url){
+void get_filepath(char *url, char *filepath){
     char *delim = "/";
     char tmp[strlen(url)];
 
@@ -48,18 +47,21 @@ char *get_filepath(char *url){
     
     char *token;
     token = strtok(tmp, delim);
-    token = strtok(tmp, delim);
-    token = strtok(tmp, delim);
+    token = strtok(NULL, delim);
+    token = strtok(NULL, delim);
 
-    printf("%s\n", tmp);
-    return token;
+    while(token != NULL){
+		strcat(filepath, "/");
+		strcat(filepath, token);
+		printf("%s\n", filepath);
+	}
 }
 
 void get_file(char *url, char *log){
-    char *address = get_address(url);
-    char *filepath = get_filepath(url);
-
-    printf("%s %s\n", address, filepath);
+    char address[128];
+    get_address(url, address);
+    char filepath[128];
+    get_filepath(url, filepath);
 
     // char *getpacket;
     // sprintf(getpacket, "GET %s HTTP/1.1\nHost: %s\nConnection: close\n\n", file, address);
