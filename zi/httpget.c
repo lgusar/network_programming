@@ -92,7 +92,7 @@ void get_file(char *url, char *log){
     char *status;
     char tmp[MAXBUFFER];
     char *delim = "\r\n";
-    strcpy(tmp, MAXBUFFER);
+    strcpy(tmp, buffer);
     
     status = strtok(buffer, delim);
 
@@ -103,7 +103,7 @@ void get_file(char *url, char *log){
             content += 4;
         }
         
-        int fd = open(log, "w");
+        int fd = open(log, 'w');
 
         fputs(content, fd);
 
