@@ -89,11 +89,26 @@ void get_file(char *url, char *log){
 
     w_recv(sock, buffer, MAXBUFFER, 0);
 	
-	char *content = strstr(buffer, "\r\n\r\n");
-	if(content != NULL){
-		content += 4;
-	}
-	printf("%s", content);
+    char *status;
+    char tmp[MAXBUFFER];
+    char *delim = "\r\n";
+    strcpy(tmp, MAXBUFFER);
+    
+    status = strtok(buffer, delim);
+
+    if(!strcmp(status, "HTTP/1.1 200 OK")){
+
+        char *content = strstr(buffer, "\r\n\r\n");
+        if(content != NULL){
+            content += 4;
+        }
+        
+        int fd = open(log, "w");
+
+        fputs(content, fd);
+
+        close(fd);
+    }
 
     close(sock);
 }
@@ -114,6 +129,8 @@ int main(int argc, char **argv){
     char *p3 = argv[6];
 
     get_file(url1, "log1");
+    get_file(url2, "log1");
+    get_file(url3, "log3");
 
     return 0;
 }
