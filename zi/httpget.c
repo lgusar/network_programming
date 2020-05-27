@@ -40,6 +40,7 @@ void get_address(char *url, char *address){
 }
 
 void get_filepath(char *url, char *filepath){
+	memset(filepath, 0, 128);
     char *delim = "/";
     char tmp[strlen(url)];
 
@@ -65,8 +66,9 @@ void get_file(char *url, char *log){
 
     char getpacket[1024];
     sprintf(getpacket, "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n", filepath, address);
+    
     char buffer[MAXBUFFER];
-
+	memset(buffer, 0, MAXBUFFER);
     int port = HTTP;
     
     int sock = w_socket(AF_INET, SOCK_STREAM, 0);
@@ -94,18 +96,20 @@ void get_file(char *url, char *log){
     char *delim = "\r\n";
     strcpy(tmp, buffer);
     
-    status = strtok(buffer, delim);
-
+    status = strtok(tmp, delim);
+    
     if(!strcmp(status, "HTTP/1.1 200 OK")){
-
         char *content = strstr(buffer, "\r\n\r\n");
+        
         if(content != NULL){
             content += 4;
         }
+                
+        remove(log);
         
         FILE *fd = fopen(log, "w");
 
-        fputs(content, fd);
+        fwrite(content, strlen(content), 1, fd);
 
         fclose(fd);
     }
@@ -129,7 +133,7 @@ int main(int argc, char **argv){
     char *p3 = argv[6];
 
     get_file(url1, "log1");
-    get_file(url2, "log1");
+    get_file(url2, "log2");
     get_file(url3, "log3");
 
     return 0;
