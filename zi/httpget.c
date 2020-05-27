@@ -28,7 +28,7 @@ void usage(){
 
 char *get_address(char *url){
     char *delim = "/";
-    char *tmp;
+    char tmp[strlen(url)];
 
     strcpy(tmp, url);
     
@@ -43,7 +43,7 @@ char *get_address(char *url){
 
 char *get_filepath(char *url){
     char *delim = "/";
-    char *tmp;
+    char tmp[strlen(url)];
 
     strcpy(tmp, url);
     
