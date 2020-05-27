@@ -284,11 +284,11 @@ void process_udp(char *buffer, int socknr, char *url){
         else printf("-\n");
     }
     
-    if(!strcmp(buffer, "refresh\n")){
+    else if(!strcmp(buffer, "refresh\n")){
         refresh_file(url, log);
     }
     
-    if(!strcmp(buffer, "restart\n")){
+    else if(!strcmp(buffer, "restart\n")){
         restart(url, log);
     }
 
@@ -365,7 +365,8 @@ int main(int argc, char **argv){
         for(int i = 0; i < fdmax + 1; i++){
 
             if(FD_ISSET(i, &read_fds)){
-
+                memset(buffer, 0, 20);
+                
                 if(i == s1){
                     w_recv(s1, buffer, 20, 0);
                     process_udp(buffer, 1, url1);
