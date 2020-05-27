@@ -250,6 +250,9 @@ void refresh_file(char *url, char *log){
     else if(!strcmp(status, "HTTP/1.1 404 Not Found")){
         printf("-\n");
     }
+    else if(!strcmp(status, "HTTP/1.1 416 Requested Range Not Satisfiable")){
+		printf("+0\n");
+	}
 
     fclose(fd);
 
