@@ -234,7 +234,7 @@ void refresh_file(char *url, char *log){
     
     status = strtok(tmp, delim);
     
-    if(!strcmp(status, "HTTP/1.1 200 OK")){
+    if(!strcmp(status, "HTTP/1.1 206 Partial Content")){
         char *content = strstr(buffer, "\r\n\r\n");
         
         if(content != NULL){
@@ -366,7 +366,7 @@ int main(int argc, char **argv){
 
             if(FD_ISSET(i, &read_fds)){
                 memset(buffer, 0, 20);
-                
+
                 if(i == s1){
                     w_recv(s1, buffer, 20, 0);
                     process_udp(buffer, 1, url1);
