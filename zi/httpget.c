@@ -103,11 +103,11 @@ void get_file(char *url, char *log){
             content += 4;
         }
         
-        FILE *fd = fopen(log, 'w');
+        FILE *fd = fopen(log, "w");
 
         fputs(content, fd);
 
-        close(fd);
+        fclose(fd);
     }
 
     close(sock);
