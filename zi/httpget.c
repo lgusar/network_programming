@@ -35,7 +35,6 @@ char *get_address(char *url){
     char *token;
     token = strtok(tmp, delim);
     token = strtok(NULL, delim);
-    token = strtok(NULL, delim);
 
     printf("%s\n", token);
     return token;
@@ -49,11 +48,10 @@ char *get_filepath(char *url){
     
     char *token;
     token = strtok(tmp, delim);
-    token = strtok(NULL, delim);
-    token = strtok(NULL, delim);
-    token = strtok(NULL, delim);
+    token = strtok(tmp, delim);
+    token = strtok(tmp, delim);
 
-    printf("%s\n", token);
+    printf("%s\n", tmp);
     return token;
 }
 
