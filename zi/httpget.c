@@ -103,7 +103,7 @@ void get_file(char *url, char *log){
             content += 4;
         }
         
-        int fd = open(log, 'w');
+        FILE *fd = open(log, 'w');
 
         fputs(content, fd);
 
