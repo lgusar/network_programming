@@ -53,7 +53,7 @@ void get_filepath(char *url, char *filepath){
     while(token != NULL){
 		strcat(filepath, "/");
 		strcat(filepath, token);
-		printf("%s\n", filepath);
+		token = strtok(NULL, delim);
 	}
 }
 
@@ -63,8 +63,8 @@ void get_file(char *url, char *log){
     char filepath[128];
     get_filepath(url, filepath);
 
-    char *getpacket;
-    sprintf(getpacket, "GET %s HTTP/1.1\nHost: %s\nConnection: close\n\n", file, address);
+    char getpacket[1024];
+    sprintf(getpacket, "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n", filepath, address);
     char buffer[MAXBUFFER];
 
     int port = HTTP;
@@ -87,9 +87,13 @@ void get_file(char *url, char *log){
 
     w_send(sock, getpacket, strlen(getpacket), 0);
 
-    w_recv(sock, buf, MAXBUFFER, 0);
-
-    printf("%s\n", buf);
+    w_recv(sock, buffer, MAXBUFFER, 0);
+	
+	char *content = strstr(buffer, "\r\n\r\n");
+	if(content != NULL){
+		content += 4;
+	}
+	printf("%s", content);
 
     close(sock);
 }
