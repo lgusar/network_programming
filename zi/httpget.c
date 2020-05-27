@@ -28,7 +28,7 @@ void usage(){
 void get_file(char *url, char *log){
     char *address, *file;
 
-    sscanf(url, "http://%99/%99", address, file);
+    sscanf(url, "http://%99s/%99s", address, file);
 
     printf("%s %s\n", address, file);
 
@@ -58,7 +58,7 @@ void get_file(char *url, char *log){
 int main(int argc, char **argv){
 
     if(argc != 7){
-        fprintf("./httpget: pogresan broj argumenata\n");
+        fprintf(stderr, "./httpget: pogresan broj argumenata\n");
         usage();
     }
 
